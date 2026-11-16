@@ -1,0 +1,273 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>감정악보</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap">
+<style>
+html,body{margin:0;height:100%;background:#f5f4f1;overflow:hidden}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+</style>
+<script src="score-data.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+ "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+// 단위: 미터. 정면 벽 하나. 가운데 선반에 정보(부클릿, 악보 카드 박스), 아래 테이블에 플레이어와 LP
+const BG=0xf5f4f1;
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.VSMShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color(BG);
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),.04).texture;
+scene.environmentIntensity=.7;
+const camera=new THREE.PerspectiveCamera(32,1,.01,20);
+
+// 빛: 왼쪽 위 앞에서 하나. 그림자는 벽과 선반, 바닥에 떨어진다
+const sun=new THREE.DirectionalLight(0xfff6ea,2.0);sun.position.set(-1.2,2.4,2.2);sun.target.position.set(0,.9,0);scene.add(sun.target);sun.castShadow=true;
+Object.assign(sun.shadow.camera,{left:-1.6,right:1.6,top:1.6,bottom:-1.6,near:.1,far:6});
+sun.shadow.mapSize.set(2048,2048);sun.shadow.radius=10;sun.shadow.blurSamples=20;sun.shadow.bias=-.0004;
+scene.add(sun);
+const wall=new THREE.Mesh(new THREE.PlaneGeometry(8,5),new THREE.MeshStandardMaterial({color:BG,roughness:.95}));wall.position.set(0,2.5,0);wall.receiveShadow=true;scene.add(wall);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(8,6),new THREE.MeshStandardMaterial({color:0xeeece7,roughness:.95}));floor.rotation.x=-Math.PI/2;floor.position.z=3;floor.receiveShadow=true;scene.add(floor);
+
+function canvasTex(w,h,fn,srgb=true){const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);
+  const t=new THREE.CanvasTexture(c);if(srgb)t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t;}
+const grain=canvasTex(512,512,(c,w,h)=>{const d=c.createImageData(w,h);for(let i=0;i<d.data.length;i+=4){const v=128+(Math.random()-.5)*60;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255;}c.putImageData(d,0,0);},false);
+grain.wrapS=grain.wrapT=THREE.RepeatWrapping;
+const paper=(color,extra={})=>new THREE.MeshStandardMaterial({color,roughness:.88,bumpMap:grain,bumpScale:.6,...extra});
+const mesh=(geo,mat,x=0,y=0,z=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;return m;};
+const box=(w,h,d,mat,x,y,z)=>mesh(new THREE.BoxGeometry(w,h,d),mat,x,y,z);
+const flat=t=>new THREE.MeshBasicMaterial({map:t,toneMapped:false}); // 지면 색은 조명에 바래지 않게 데이터 그대로
+
+await Promise.all(['700 40px "Gowun Batang"','400 20px "Gowun Batang"'].map(f=>document.fonts.load(f)));
+
+// ── 감정악보 규칙 (prototype/감정악보_인터페이스.html 그대로) ──
+const SC=window.SCORE, HAND=SC.bigloveHand, ALB=['TEAM BABY','THIRSTY','TEEN TROUBLES'];
+function _lin(L,C,h){const A=C*Math.cos(h*Math.PI/180),B=C*Math.sin(h*Math.PI/180);const l=(L+.3963377774*A+.2158037573*B)**3,m=(L-.1055613458*A-.0638541728*B)**3,s=(L-.0894841775*A-1.291485548*B)**3;return [4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s];}
+const _inG=v=>v.every(x=>x>=-1e-4&&x<=1+1e-4);
+function _maxC(L,h){let c=0;while(c<.4&&_inG(_lin(L,c+.002,h)))c+=.002;return c;}
+const _hex=v=>'#'+v.map(x=>{x=Math.max(0,Math.min(1,x));return Math.round(255*(x<=.0031308?12.92*x:1.055*x**(1/2.4)-.055)).toString(16).padStart(2,'0')}).join('');
+const TOPIC={L:[27,1],F:[150,.75],S:[255,.75],H:[85,.75],W:[320,.75]};const _CC={},_PK={};
+function colOf(k,a,e){const key=k+a+e;if(_CC[key])return _CC[key];const[h,cap]=TOPIC[k]||TOPIC.L;
+ if(!_PK[k]){let pL=.4,pC=0;for(let q=.4;q<=.8;q+=.005){const m=_maxC(q,h);if(m>pC){pC=m;pL=q;}}_PK[k]=[pL,pC*cap];}const[pL,pC]=_PK[k];
+ const d=(5-a)/4;let L=pL-(pL-.27)*d,C=pC*(1-.7*d);const w=[.62,.32,0][Math.min(e,2)]*(1-.55*d);L=L+(.94-L)*w;C=Math.min(C*(1-w),_maxC(L,h));
+ return _CC[key]={c:_hex(_lin(L,C,h)),dark:L<.55};}
+const SP=.35;
+function layoutUnits(units,o){const cols=[];let x=o.pad;
+ units.forEach(u=>{u.w.forEach((ws,li)=>{let off=0;const st=[];ws.forEach(w=>{st.push(off);off+=w+SP;});
+   cols.push({x,len:off-SP,boxes:(u.b[li]||[]).map(([a,b])=>({y0:st[a],y1:st[b]+ws[b],c:colOf(u.k||'L',u.a,u.e).c}))});x+=o.lineGap;});x+=o.unitGap-o.lineGap;});
+ return {cols,w:x-o.unitGap+o.lineGap+o.pad};}
+// 악보: 줄 하나 = 세로 기둥 하나, 아래에서 위로
+function drawCols(c,cols,base,o){cols.forEach(col=>col.boxes.forEach(b=>{c.fillStyle=b.c;c.fillRect(col.x-o.bw/2,base-b.y1*o.cell,o.bw,(b.y1-b.y0)*o.cell);}));}
+function drawSheet(c,units,x0,y0,o,{words,boxes,color}){let y=y0;
+ units.forEach(u=>{u.w.forEach((ws,li)=>{let off=0;const st=ws.map(w=>{const s=off;off+=w+SP;return s;});
+   if(words){c.fillStyle='#e4dfd6';ws.forEach((w,i)=>c.fillRect(x0+st[i]*o.cell,y,w*o.cell,o.bh));}
+   if(boxes)(u.b[li]||[]).forEach(([a,b])=>{const x=x0+st[a]*o.cell,W=(st[b]+ws[b]-st[a])*o.cell;
+     if(color){c.fillStyle=colOf(u.k,u.a,u.e).c;c.fillRect(x,y,W,o.bh);}else{c.strokeStyle='#2a2723';c.lineWidth=2;c.strokeRect(x+1,y+1,W-2,o.bh-2);}});
+   y+=o.lineGap;});y+=o.unitGap-o.lineGap;});}
+const GRAY='#9a948a';
+const MAXLEN=Math.max(...SC.songs.flatMap(s=>s.u.flatMap(u=>u.w.map(ws=>ws.reduce((x,y)=>x+y+SP,0)-SP))));
+
+// ── 부클릿 지면 ──
+// 인계 문서 7번 B안 (햄 선택). 문장은 손대지 않는다
+const INTRO='같은 사랑을 어떻게 이렇게 다르게 부를 수 있을까. 검정치마 3집은 세 파트, 40곡이 전부 사랑 노래다. 가사에서 감정이 결정되는 말에만 색을 칠해 감정악보를 만들었다. 가사를 지우고 감정만 남겼을 때 세 파트는 어떻게 보일까.';
+function pageFirst(c,w){
+ {c.fillStyle='#2a2723';c.font='26px "Gowun Batang"';c.textAlign='left';let line='',y=150+20;const maxW=w/2-130;
+  for(const word of INTRO.split(' ')){const t=line?line+' '+word:word;if(c.measureText(t).width>maxW){c.fillText(line,90,y);y+=44;line=word;}else line=t;}c.fillText(line,90,y);}
+ const x=w/2+40,y=150,cw=64,ch=38,g=5;
+ [2,1,0].forEach((e,r)=>{for(let a=1;a<=5;a++){c.fillStyle=colOf('L',a,e).c;c.fillRect(x+(a-1)*(cw+g),y+r*(ch+g),cw,ch);}});
+ c.fillStyle=GRAY;c.font='22px "Gowun Batang"';c.textAlign='left';c.fillText('이별',x,y+3*(ch+g)+26);
+ c.textAlign='right';c.fillText('확신',x+5*(cw+g)-g,y+3*(ch+g)+26);
+ c.save();c.translate(x-14,y);c.rotate(-Math.PI/2);c.textAlign='right';c.fillText('세게',0,0);c.textAlign='left';c.fillText('덤덤',-3*(ch+g)+g,0);c.restore();}
+// Big Love가 악보가 되어 가는 과정. 가사 → 서술어 박스 → 색 | 90도 회전 → 악보
+const STEP=HAND.slice(0,2),SO={cell:28,bh:24,lineGap:38,unitGap:64};
+function pageStepL(c,w){[[1,0,0],[1,1,0],[0,1,1]].forEach(([words,boxes,color],i)=>drawSheet(c,STEP,90,140+i*270,SO,{words,boxes,color}));}
+function pageStepR(c,w){const o={cell:SO.cell,bw:SO.bh,lineGap:SO.lineGap,unitGap:SO.unitGap,pad:90+SO.bh/2};drawCols(c,layoutUnits(STEP,o).cols,500,o);
+ const f={cell:16,bw:18,lineGap:24,unitGap:52,pad:0},L=layoutUnits(HAND,f),s=Math.min(1,(w-180)/L.w),o2={cell:f.cell*s,bw:f.bw*s,lineGap:f.lineGap*s,unitGap:f.unitGap*s,pad:90};
+ drawCols(c,layoutUnits(HAND,o2).cols,900,o2);}
+// 세 앨범 악보를 펼침면 하나에 나란히. 같은 축척, 악보처럼 줄 바꿈
+const wide=document.createElement('canvas');wide.width=2048;wide.height=1024;
+{const c=wide.getContext('2d'),M=90,maxW=2048-M*2,songs=SC.songs;
+ const plan=k=>{const o={cell:4.2*k,bw:4.6*k,lineGap:6.4*k,unitGap:11*k,songGap:30*k,pad:0},H=MAXLEN*o.cell;let y=0;
+   const out=ALB.map(al=>{const staves=[[]];let x=0;songs.filter(s=>s.al===al).forEach(s=>{const L=layoutUnits(s.u,o);
+     if(x+L.w>maxW&&staves.at(-1).length){staves.push([]);x=0;}staves.at(-1).push(L.cols.map(cc=>({...cc,x:cc.x+x})));x+=L.w+o.songGap;});
+     const top=y;y+=30+staves.length*(H+12*k)+28;return {al,top,staves};});return {o,H,out,h:y};};
+ let k=1.6;while(plan(k).h>1024-M*1.4&&k>.3)k-=.02;const {o,H,out}=plan(k);
+ out.forEach(({al,top,staves})=>{c.fillStyle=GRAY;c.font='18px "Gowun Batang"';c.textAlign='left';c.fillText(al,M,M*.7+top+18);
+   staves.forEach((st,i)=>drawCols(c,st.flat().map(cc=>({...cc,x:cc.x+M})),M*.7+top+30+i*(H+12*k)+H,o));});}
+const half=x=>c=>c.drawImage(wide,x,0,1024,1024,0,0,1024,1024);
+
+// ── 선반 ──
+const SHELF_Y=1.06,SHELF_D=.3;
+const shelfMat=new THREE.MeshStandardMaterial({color:0xf3f1ec,roughness:.6});
+scene.add(box(1.2,.025,SHELF_D,shelfMat,0,SHELF_Y-.0125,SHELF_D/2));
+
+// ── 부클릿: 선반 왼쪽에 세워 둔다. 뒤표지 위에 낱장이 겹쳐 있고, 왼쪽 등을 축으로 한 장씩 넘어간다 ──
+const SPREADS=[[null,pageFirst],[pageStepL,pageStepR],[half(0),half(1024)]];
+const pageMat=(fn,back=false,color='#fbfaf6')=>{const t=canvasTex(1024,1024,(c,w,h)=>{c.fillStyle=color;c.fillRect(0,0,w,h);if(fn)fn(c,w);});
+  if(back){t.center.set(.5,.5);t.rotation=Math.PI;} // 넘긴 뒤 뒷면이 바로 보이게
+  return flat(t);};
+const BW=.296,LT=.0005,BACK=.0012,NL=SPREADS.length;
+const booklet=new THREE.Group(), bookletLift=new THREE.Group();booklet.add(bookletLift);scene.add(booklet);
+const edge=paper(0xf6f4ee);
+bookletLift.add(box(BW,BACK,BW,[edge,edge,pageMat(SPREADS[NL-1][1]),edge,edge,edge],0,BACK/2,0));
+const leafY=k=>BACK+(NL-k-.5)*LT, leafFlatY=k=>BACK+(k+.5)*LT;
+const leaves=SPREADS.map((_,k)=>{const h=new THREE.Group();h.position.set(-BW/2,leafY(k),0);
+  const front=k?pageMat(SPREADS[k-1][1]):pageMat((c,w)=>{c.fillStyle='#2a2723';c.font='700 76px "Gowun Batang"';c.textAlign='center';c.fillText('감정악보',w/2,w/2+26);},false,'#ece8df');
+  h.add(box(BW,LT*.9,BW,[edge,edge,front,pageMat(SPREADS[k][0],true),edge,edge],BW/2,0,0));bookletLift.add(h);return h;});
+let page=0; // 넘긴 장 수
+
+// ── 악보 카드 40장: 곡 하나 = 카드 하나. 앞면은 그 곡의 악보 ──
+const CW=.22,CH=.11,CT=.006;
+const cardEdge=new THREE.MeshStandardMaterial({color:0xf7f6f2,roughness:.5});
+const songsOrd=ALB.flatMap(al=>SC.songs.filter(s=>s.al===al).sort((a,b)=>a.tr-b.tr));
+const cards=songsOrd.map((s,i)=>{const tex=canvasTex(1024,512,(c,w,h)=>{c.fillStyle='#ffffff';c.fillRect(0,0,w,h);
+   const f={cell:16,bw:18,lineGap:24,unitGap:52,pad:0},L=layoutUnits(s.u,f),sh=Math.max(...L.cols.map(c=>c.len))*f.cell,k=Math.min((w-120)/L.w,(h-100)/sh),
+     o={cell:f.cell*k,bw:f.bw*k,lineGap:f.lineGap*k,unitGap:f.unitGap*k,pad:(w-L.w*k)/2};
+   drawCols(c,layoutUnits(s.u,o).cols,(h+sh*k)/2,o);});
+  const m=new THREE.Mesh(new THREE.BoxGeometry(CW,CH,CT),[cardEdge,cardEdge,cardEdge,cardEdge,flat(tex),cardEdge]);m.castShadow=true;
+  m.userData={click:'card',i};scene.add(m);return m;});
+// 카드 박스: 선반 오른쪽. 위가 열린 상자에 카드가 서 있다
+const BOXC=new THREE.Vector3(.3,SHELF_Y,.15),BXW=.25,BXD=.27,BXH=.07;
+const cardBox=new THREE.Group(),boxLift=new THREE.Group();cardBox.add(boxLift);cardBox.position.copy(BOXC);scene.add(cardBox);
+const crate=paper(0xf1efea);
+boxLift.add(box(BXW,.004,BXD,crate,0,.002,0));
+[[0,BXD/2,BXW,.004],[0,-BXD/2,BXW,.004],[BXW/2,0,.004,BXD],[-BXW/2,0,.004,BXD]].forEach(([x,z,w,d])=>boxLift.add(box(w,BXH,d,crate,x,BXH/2,z)));
+cardBox.userData={click:'box',lift:boxLift};
+const qBox=new THREE.Quaternion();
+const boxPos=i=>BOXC.clone().add(new THREE.Vector3(0,CH/2+.006,BXD/2-.012-i*((BXD-.024)/(cards.length-1))));
+
+// ── 플레이어와 LP: 아래 테이블. 필요할 때 쓴다 ──
+const TBL_Y=.56;
+const tblMat=new THREE.MeshStandardMaterial({color:0xf4f3ef,roughness:.55});
+scene.add(box(.95,.03,.42,tblMat,0,TBL_Y-.015,.24));
+[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>scene.add(box(.03,TBL_Y-.03,.03,tblMat,a*.44,(TBL_Y-.03)/2,.24+b*.18)));
+const player=new THREE.Group();player.position.set(.2,TBL_Y,.24);scene.add(player);
+const satin=new THREE.MeshPhysicalMaterial({color:0xecebe7,roughness:.38,clearcoat:.4,clearcoatRoughness:.3});
+const alu=new THREE.MeshStandardMaterial({color:0xd9dadc,metalness:1,roughness:.22});
+const chrome=new THREE.MeshStandardMaterial({color:0xeeeeee,metalness:1,roughness:.08});
+const rubber=new THREE.MeshStandardMaterial({color:0x1d1c1b,roughness:.92});
+const PW=.45,PD=.36,PH=.075,FT=.014,TOP=FT+PH;
+player.add(mesh(new RoundedBoxGeometry(PW,PH,PD,4,.01),satin,0,FT+PH/2,0));
+[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>player.add(mesh(new THREE.CylinderGeometry(.022,.024,FT,32),rubber,a*(PW/2-.04),FT/2,b*(PD/2-.04))));
+const PX=-.045;
+player.add(mesh(new THREE.CylinderGeometry(.152,.152,.014,128),alu,PX,TOP+.007,0));
+player.add(mesh(new THREE.CylinderGeometry(.148,.148,.003,128),rubber,PX,TOP+.0155,0));
+player.add(mesh(new THREE.CylinderGeometry(.0035,.0035,.022,16),chrome,PX,TOP+.025,0));
+const AX=.17,AZ=-.12;
+player.add(mesh(new THREE.CylinderGeometry(.028,.03,.02,48),alu,AX,TOP+.01,AZ));
+player.add(mesh(new THREE.CylinderGeometry(.012,.012,.03,32),chrome,AX,TOP+.035,AZ));
+const arm=mesh(new THREE.CylinderGeometry(.0042,.0042,.24,24),chrome,AX,TOP+.046,AZ+.1);arm.rotation.x=Math.PI/2;player.add(arm);
+player.add(mesh(new THREE.CylinderGeometry(.014,.014,.03,32),rubber,AX,TOP+.046,AZ-.045).rotateX(Math.PI/2));
+const shell=box(.018,.006,.045,new THREE.MeshStandardMaterial({color:0x2a2a2a,metalness:.6,roughness:.35}),AX-.006,TOP+.042,AZ+.235);shell.rotation.y=.35;player.add(shell);
+player.add(mesh(new THREE.CylinderGeometry(.004,.004,.04,16),alu,AX+.012,TOP+.02,AZ+.2));
+player.add(mesh(new THREE.CylinderGeometry(.02,.02,.012,48),alu,-PW/2+.045,TOP+.006,PD/2-.045));
+// LP 세 장: 한 장에 앨범 하나. 악보를 원으로 감는다 (12시부터 시계 방향, 줄 하나 = 반지름 방향 기둥 하나, 세 장 같은 축척)
+const LPR=.151,LPT=.0025;
+const grooveFn=(c,w,h,col)=>{c.fillStyle=col;c.fillRect(0,0,w,h);const cx=w/2;
+  for(let r=w*.17;r<w*.49;r+=1.6){c.strokeStyle=`rgba(0,0,0,${.03+Math.random()*.05})`;c.beginPath();c.arc(cx,cx,r,0,7);c.stroke();}
+  c.fillStyle='#ebe4d4';c.beginPath();c.arc(cx,cx,w*.165,0,7);c.fill();c.fillStyle='#bdb6a8';c.beginPath();c.arc(cx,cx,w*.006,0,7);c.fill();};
+const lpBack=new THREE.MeshPhysicalMaterial({color:0xffffff,map:canvasTex(1024,1024,(c,w,h)=>grooveFn(c,w,h,'#d9ceb6')),roughness:.32,clearcoat:1,clearcoatRoughness:.12});
+const lpEdge=new THREE.MeshPhysicalMaterial({color:0xe2dac8,roughness:.3,clearcoat:1});
+const lps=ALB.map((al,i)=>{const tex=canvasTex(1024,1024,(c,w,h)=>{grooveFn(c,w,h,'#d9ceb6');
+   const o={cell:1,lineGap:1,unitGap:1.7,pad:0},cols=[];let x=0; // 프로토타입 비율 (lineGap 6.4 : unitGap 11 : songGap 30)
+   songsOrd.filter(s=>s.al===al).forEach(s=>{const L=layoutUnits(s.u,o);L.cols.forEach(cc=>cols.push({...cc,x:cc.x+x}));x+=L.w+4.7;});
+   const r0=w*.18,r1=w*.485,step=Math.PI*2/x,bw=step*(r0+r1)/2*.7;
+   c.translate(w/2,w/2);cols.forEach(cc=>{c.save();c.rotate(cc.x*step);
+     cc.boxes.forEach(b=>{const ra=r0+(r1-r0)*b.y0/MAXLEN,rb=r0+(r1-r0)*b.y1/MAXLEN;c.fillStyle=b.c;c.fillRect(-bw/2,-rb,bw,rb-ra);});c.restore();});});
+  const g=new THREE.Group(),disc=mesh(new THREE.CylinderGeometry(LPR,LPR,LPT,128),[lpEdge,flat(tex),lpBack]);g.add(disc);scene.add(g);
+  g.userData={click:'lp',lift:disc};return g;});
+
+// ── 포즈 ──
+const v3=a=>({x:a[0],y:a[1],z:a[2]});
+function set(o,{p,r}){o.position.set(...p);o.rotation.set(...r);}
+// 부클릿: 선반 위에 벽 쪽으로 조금 기대 세움 (지면이 정면을 본다)
+const REST={booklet:{p:[-.3,SHELF_Y+BW/2*Math.cos(.1)+.002,.06],r:[Math.PI/2-.1,0,0]},
+  lp:i=>({p:[-.3+i*.045,TBL_Y+LPR*Math.cos(.14),.03+i*.012],r:[Math.PI/2-.14,0,0]})};
+set(booklet,REST.booklet);lps.forEach((g,i)=>set(g,REST.lp(i)));
+const CAM={home:{p:[0,1.05,2.3],t:[0,.95,0]},cards:{p:[-.05,1.85,1.6],t:[.1,1.25,.45]}};
+camera.position.set(...CAM.home.p);const camT=new THREE.Vector3(...CAM.home.t);
+
+// ── 트윈 ──
+const ease=t=>t<.5?4*t*t*t:1-(-2*t+2)**3/2, tws=[];
+function tw(o,to,dur=800,delay=0){return new Promise(res=>{tws.push({o,to,dur,t0:performance.now()+delay,res});});}
+function tick(now){for(let i=tws.length-1;i>=0;i--){const w=tws[i];if(now<w.t0)continue;
+  if(!w.from){w.from={};for(const k in w.to)w.from[k]=w.o[k];}
+  const t=Math.min(1,(now-w.t0)/w.dur),e=ease(t);for(const k in w.to)w.o[k]=w.from[k]+(w.to[k]-w.from[k])*e;
+  if(t===1){tws.splice(i,1);w.res();}}}
+const pose=(o,{p,r},dur,delay)=>Promise.all([tw(o.position,v3(p),dur,delay),tw(o.rotation,v3(r),dur,delay)]);
+const camTo=(k,dur=1200)=>Promise.all([tw(camera.position,v3(CAM[k].p),dur),tw(camT,v3(CAM[k].t),dur)]);
+const flip=(k,open,delay=0)=>Promise.all([tw(leaves[k].rotation,{z:open?Math.PI:0},800,delay),tw(leaves[k].position,{y:open?leafFlatY(k):leafY(k)},800,delay)]);
+// 판판한 물건(부클릿, LP)을 눈앞으로: 면이 카메라를 본다
+function front(dist,dx=0){const c=camera.position,P=c.clone().lerp(camT,dist),d=c.clone().sub(P);return {p:[P.x+dx,P.y,P.z],r:[Math.atan2(d.z,d.y),0,0]};}
+
+// ── 카드 줄: 상자에서 나와 비스듬히 한 줄로 선다. 스크롤로 넘기면 한 장씩 위로 꺼내진다 ──
+const ROW_C=new THREE.Vector3(.08,1.25,.5),ROW_D=new THREE.Vector3(.55,.06,-.83).normalize(),GAP=.03;
+const qRow=new THREE.Quaternion().setFromEuler(new THREE.Euler(0,Math.atan2(-ROW_D.x,-ROW_D.z),0));
+const RT={v:0},VT={v:0};let focus=0,focusS=0,sel=-1;
+const _p=new THREE.Vector3(),_q=new THREE.Quaternion(),_vp=new THREE.Vector3(),_vq=new THREE.Quaternion();
+function placeCards(){focusS+=(focus-focusS)*.15;
+  // 눈앞 자리: 카메라 앞 .45m, 정면
+  _vp.copy(camera.position).add(camT.clone().sub(camera.position).normalize().multiplyScalar(.45));_vq.copy(camera.quaternion);
+  cards.forEach((m,i)=>{const k=Math.max(0,Math.min(1,RT.v*1.6-(i/cards.length)*.6)),e=ease(k);
+    const row=ROW_C.clone().addScaledVector(ROW_D,(i-focusS)*GAP).add(new THREE.Vector3(0,Math.max(0,1-Math.abs(i-focusS))*CH*.95,0));
+    _p.copy(boxPos(i)).lerp(row,e);_q.copy(qBox).slerp(qRow,e);
+    if(i===sel){_p.lerp(_vp,ease(VT.v));_q.slerp(_vq,ease(VT.v));}
+    m.position.copy(_p);m.quaternion.copy(_q);});}
+
+// ── 장면 흐름: 벽 → 부클릿 / 카드 줄 → 카드 한 장 / LP ──
+let state='home',busy=false,lpOpen=null;
+async function openBooklet(){await pose(booklet,front(.62,BW/2),1100);await flip(0,true);page=1;}
+async function closeBooklet(){await Promise.all(leaves.slice(0,page).map((_,k)=>flip(k,false,(page-1-k)*90)));page=0;await pose(booklet,REST.booklet,1000);}
+async function openCards(){focus=focusS=0;camTo('cards',1400);await tw(RT,{v:1},1800);}
+async function closeCards(){camTo('home',1600);await tw(RT,{v:0},1600);}
+async function openCard(i){sel=i;await tw(VT,{v:1},700);}
+async function closeCard(){await tw(VT,{v:0},600);sel=-1;}
+async function openLP(g){lpOpen=g;await pose(g,front(.6),1100);}
+async function closeLP(){const i=lps.indexOf(lpOpen);await pose(lpOpen,REST.lp(i),1000);lpOpen=null;}
+const run=async(fn,next)=>{busy=true;await fn();state=next;busy=false;};
+function act(h){if(busy)return;const target=h&&h.o.userData.click;
+  if(state==='booklet'&&target==='booklet'){ // 등 오른쪽을 누르면 다음 장, 왼쪽이면 이전 장
+    const next=booklet.worldToLocal(h.point.clone()).x>-BW/2;
+    if(next&&page<NL)run(async()=>{await flip(page,true);page++;},'booklet');
+    else if(!next&&page>1)run(async()=>{page--;await flip(page,false);},'booklet');}
+  else if(state==='home'&&target==='booklet')run(openBooklet,'booklet');
+  else if(state==='home'&&target==='box')run(openCards,'cards');
+  else if(state==='home'&&target==='lp')run(()=>openLP(h.o),'lp');
+  else if(state==='cards'&&target==='card'){const i=h.o.userData.i;if(i===focus)run(()=>openCard(i),'card');else focus=i;}
+  else if(!target&&state==='card')run(closeCard,'cards');
+  else if(!target&&state==='cards')run(closeCards,'home');
+  else if(!target&&state==='booklet')run(closeBooklet,'home');
+  else if(!target&&state==='lp')run(closeLP,'home');}
+// 스크롤: 카드 한 장씩
+let wheelAcc=0;
+addEventListener('wheel',e=>{if(state!=='cards')return;wheelAcc+=e.deltaY;
+  while(Math.abs(wheelAcc)>=60){focus=Math.max(0,Math.min(cards.length-1,focus+Math.sign(wheelAcc)));wheelAcc-=Math.sign(wheelAcc)*60;}},{passive:true});
+
+// ── 고르기: 지금 단계에서 집을 수 있는 물건만 반응 ──
+booklet.userData={click:'booklet',lift:bookletLift};
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let hover=null;
+const pickable=()=>state==='home'?[booklet,cardBox,...lps]:state==='booklet'?[booklet]:state==='cards'?cards:[];
+function pick(e){ptr.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);ray.setFromCamera(ptr,camera);
+  const hit=ray.intersectObjects(pickable(),true)[0];let o=hit&&hit.object;while(o&&!o.userData.click)o=o.parent;return o?{o,point:hit.point}:null;}
+renderer.domElement.addEventListener('pointermove',e=>{const h=busy?null:pick(e);hover=h&&h.o;renderer.domElement.style.cursor=hover?'pointer':'default';});
+renderer.domElement.addEventListener('click',e=>act(pick(e)));
+addEventListener('keydown',e=>{if(e.key==='Escape')act(null);
+  if(state==='cards'&&(e.key==='ArrowRight'||e.key==='ArrowDown'))focus=Math.min(cards.length-1,focus+1);
+  if(state==='cards'&&(e.key==='ArrowLeft'||e.key==='ArrowUp'))focus=Math.max(0,focus-1);});
+
+function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;
+  camera.fov=camera.aspect<1?52:32;camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+renderer.setAnimationLoop(now=>{tick(now);camera.lookAt(camT);
+  // 집을 수 있는 물건은 마우스를 올리면 살짝 앞으로
+  [booklet,cardBox,...lps].forEach(o=>{const l=o.userData.lift;l.position.y+=((hover===o&&!busy&&state==='home'?.012:0)-l.position.y)*.15;});
+  placeCards();renderer.render(scene,camera);});
+</script>

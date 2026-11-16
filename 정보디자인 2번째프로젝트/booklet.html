@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>부클릿 내용</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500&display=swap">
+<style>
+/* 모듈: 부클릿 속 내용. 펼침면 하나씩. 왼쪽 면 클릭 = 이전, 오른쪽 = 다음 (← → 키도) */
+:root{--ground:#e7e1d6;--line:#cfc7ba;--mute:#7c746a;--ink:#1b1916}
+html,body{margin:0;background:var(--ground);font-family:"IBM Plex Sans KR","Malgun Gothic",sans-serif}
+.spread{display:grid;grid-template-columns:1fr 1fr;width:min(92vw,calc((100vh - 80px)*2));margin:40px auto;box-shadow:0 14px 40px rgba(0,0,0,.12)}
+.spread canvas{width:100%;aspect-ratio:1;display:block;cursor:pointer}
+.spread canvas:first-child{box-shadow:inset -18px 0 24px -20px rgba(0,0,0,.25)}
+#panel{position:fixed;right:12px;bottom:12px;width:250px;max-height:calc(100vh - 24px);overflow:auto;background:#faf7f1;border:1px solid var(--line);font-size:12px;padding:10px 12px;box-sizing:border-box}
+#panel[hidden]{display:none}
+#panel label{display:grid;grid-template-columns:1fr 46px;gap:2px 8px;margin:6px 0}
+#panel input[type=range],#panel select{grid-column:1/3;width:100%}
+#panel output{text-align:right;font-variant-numeric:tabular-nums;color:var(--mute)}
+#panel .row{display:flex;gap:6px;margin:6px 0}
+#panel button{font:inherit;padding:4px 8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+#toggle{position:fixed;right:12px;bottom:12px;font:12px sans-serif;padding:4px 8px;border:1px solid var(--line);background:#faf7f1;cursor:pointer}
+</style>
+<div class="spread"><canvas id="L"></canvas><canvas id="R"></canvas></div>
+<button id="toggle" hidden>조정 (H)</button>
+<div id="panel"></div>
+<script src="data.js"></script>
+<script src="booklet-pages.js"></script>
+<script>
+(async()=>{
+const {makeBook,ALBUMS,exampleIndex}=Booklet, DATA=window.DATA;
+
+// 조정값. 햄이 맞춘 값을 '값 복사'로 받아 기본값에 반영한다
+const S0={song:'Love Is All',sent:-1,taper:.6,width:.85,gap:2,lenPow:1,lmin:.34,lmax:.76,chroma:1,rough:.6,blur:4,gloss:.4};
+let S={...S0};try{Object.assign(S,JSON.parse(localStorage.getItem('bk-S')||'{}'))}catch(e){}
+const SLIDERS=[['sent','예시 문장 번호 (-1 = 자동)',-1,60,1],['taper','줄기 끝 뾰족함',0,3,.05],['width','판 위 줄기 굵기',.1,1.5,.05],
+  ['gap','곡 사이 빈자리',0,10,1],['lenPow','줄기 길이 곡선',.3,1,.05],['lmin','명도 최저',.15,.6,.01],['lmax','명도 최고',.5,.95,.01],
+  ['chroma','채도 배율',0,2,.05],['rough','몸: 거친 파형',0,2,.05],['blur','기억: 흐린 정도',0,12,.5],['gloss','약속: 윤기',0,1,.05]];
+
+await Promise.all(['700 40px "Gowun Batang"','400 30px "IBM Plex Sans KR"','500 30px "IBM Plex Sans KR"'].map(f=>document.fonts.load(f)));
+const cv=[document.getElementById('L'),document.getElementById('R')];let spread=0,book;
+function render(){book=makeBook(DATA,S);cv.forEach((c,i)=>{c.width=c.height=1024;book.pages[spread*2+i](c.getContext('2d'),1024);});
+  try{localStorage.setItem('bk-S',JSON.stringify(S))}catch(e){}}
+const go=d=>{spread=Math.max(0,Math.min(book.spreads-1,spread+d));render();};
+cv[0].onclick=()=>go(-1);cv[1].onclick=()=>go(1);
+addEventListener('keydown',e=>{if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1);});
+
+const panel=document.getElementById('panel'),toggle=document.getElementById('toggle');
+function buildPanel(){
+  const song=DATA.find(s=>s.t===S.song)||DATA[0];
+  panel.innerHTML=`<div class="row"><button id="hide">닫기 (H)</button></div><label>예시 곡<select id="song">${ALBUMS.map(a=>`<optgroup label="${a}">${DATA.filter(s=>s.a===a).map(s=>`<option ${s.t===S.song?'selected':''}>${s.t}</option>`).join('')}</optgroup>`).join('')}</select></label>
+    <div id="cur" style="color:var(--mute)">지금 예시 문장: ${exampleIndex(song,S)}번</div>`+
+    SLIDERS.map(([k,t,a,b,st])=>`<label>${t}<output id="o-${k}">${S[k]}</output><input type="range" min="${a}" max="${k==='sent'?song.n.length-1:b}" step="${st}" value="${S[k]}" data-s="${k}"></label>`).join('')+
+    `<div class="row"><button id="copy">값 복사</button><button id="reset">처음 값</button></div>`;
+  panel.querySelector('#song').onchange=e=>{S.song=e.target.value;S.sent=-1;buildPanel();render();};
+  panel.querySelectorAll('[data-s]').forEach(el=>el.oninput=()=>{S[el.dataset.s]=+el.value;document.getElementById('o-'+el.dataset.s).textContent=el.value;
+    if(el.dataset.s==='sent')panel.querySelector('#cur').textContent='지금 예시 문장: '+exampleIndex(song,S)+'번';render();});
+  panel.querySelector('#copy').onclick=e=>navigator.clipboard.writeText(JSON.stringify(S)).then(()=>e.target.textContent='복사됨');
+  panel.querySelector('#reset').onclick=()=>{S={...S0};buildPanel();render();};
+  panel.querySelector('#hide').onclick=()=>{panel.hidden=true;toggle.hidden=false;};
+}
+toggle.onclick=()=>{panel.hidden=false;toggle.hidden=true;};
+addEventListener('keydown',e=>{if(e.key==='h'||e.key==='H'||e.key==='ㅗ'){panel.hidden=!panel.hidden;toggle.hidden=!panel.hidden;}});
+buildPanel();render();
+})();
+</script>

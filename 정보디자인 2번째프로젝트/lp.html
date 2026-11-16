@@ -1,0 +1,111 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP 세 장</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500&display=swap">
+<style>
+/* 모듈: LP 세 장. 문장 하나가 반지름 방향 줄기 하나, 12시에서 시계 방향으로 펼쳐진다 */
+:root{--ground:#e7e1d6;--label:#ece5d8;--ink:#1b1916;--mute:#7c746a;--line:#cfc7ba;
+  --serif:"Gowun Batang",serif;--sans:"IBM Plex Sans KR","Malgun Gothic",sans-serif}
+html,body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans)}
+.discs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3vw;padding:6vh 4vw;max-width:1500px;margin:0 auto;box-sizing:border-box;min-height:100vh;align-content:center}
+@media (max-width:760px){.discs{grid-template-columns:1fr;padding:24px 16px}}
+canvas{width:100%;aspect-ratio:1;display:block}
+/* 조정 패널: 작업용. 최종 화면에서는 뺀다 (?final) */
+#panel{position:fixed;right:12px;bottom:12px;width:250px;max-height:calc(100vh - 24px);overflow:auto;background:#faf7f1;border:1px solid var(--line);font-size:12px;padding:10px 12px;box-sizing:border-box}
+#panel[hidden]{display:none}
+#panel label{display:grid;grid-template-columns:1fr 46px;gap:2px 8px;margin:6px 0}
+#panel input[type=range]{grid-column:1/3;width:100%}
+#panel output{text-align:right;font-variant-numeric:tabular-nums;color:var(--mute)}
+#panel .row{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+#panel button{font:inherit;padding:4px 8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+#panel button[aria-pressed=true]{background:var(--ink);color:#fff}
+#toggle{position:fixed;right:12px;bottom:12px;font:12px var(--sans);padding:4px 8px;border:1px solid var(--line);background:#faf7f1;cursor:pointer}
+</style>
+
+<div class="discs" id="discs"></div>
+<button id="toggle" hidden>조정</button>
+<div id="panel"></div>
+
+<script src="data.js"></script>
+<script>
+const ALBUMS=['TEAM BABY','THIRSTY','TEEN TROUBLES'];
+const HUE={L:22,F:150,S:255,H:55,W:305}, CH={L:.20,F:.15,S:.16,H:.14,W:.15};
+const VINYL={black:'#121110',clear:'#f3eee2'};
+
+// 조정값. 햄이 맞춘 값을 '값 복사'로 받아 여기 기본값에 반영한다
+const S0={vinyl:'clear',filler:'gap',outer:.97,label:.30,inner:.03,lenPow:1,width:.85,taper:.6,gap:2,
+  lmin:.34,lmax:.76,chroma:1,rough:.6,blur:4,gloss:.4};
+let S={...S0}; try{Object.assign(S,JSON.parse(localStorage.getItem('lp2-S')||'{}'))}catch(e){}
+
+const SLIDERS=[ // [키, 이름, 최소, 최대, 간격]
+  ['outer','줄기 바깥 끝',.8,1,.005],['label','라벨 크기',.15,.45,.005],['inner','라벨과 줄기 사이',0,.15,.005],
+  ['lenPow','줄기 길이 곡선 (1=글자 수 비례, 작을수록 짧은 줄기가 길어짐)',.3,1,.05],
+  ['width','줄기 굵기 (자리 대비)',.1,1.5,.05],['taper','끝 뾰족함',0,3,.05],['gap','곡 사이 빈자리 (문장 몇 개만큼)',0,10,1],
+  ['lmin','명도 최저 (태도 1)',.15,.6,.01],['lmax','명도 최고 (태도 5)',.5,.95,.01],['chroma','채도 배율',0,2,.05],
+  ['rough','몸: 거친 파형',0,2,.05],['blur','기억: 흐린 정도',0,12,.5],['gloss','약속: 매끈한 윤기',0,1,.05]];
+
+function oklch(L,C,h,a=1){const A=C*Math.cos(h*Math.PI/180),B=C*Math.sin(h*Math.PI/180);
+  const l=(L+.3963377774*A+.2158037573*B)**3,m=(L-.1055613458*A-.0638541728*B)**3,s=(L-.0894841775*A-1.291485548*B)**3;
+  const c=[4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s]
+   .map(x=>{x=Math.max(0,Math.min(1,x));return Math.round(255*(x<=.0031308?12.92*x:1.055*x**(1/2.4)-.055))});
+  return `rgba(${c[0]},${c[1]},${c[2]},${a})`;}
+// 색상=주제, 명도=태도, 채도=세기 (CLAUDE.md 3장 규칙, 범위만 슬라이더로)
+function col(tag,a=1,dL=0){const att=(+tag[1]-1)/4, it=(+tag[2]-1)/2;
+  return oklch(S.lmin+(S.lmax-S.lmin)*att+dL,(.02+(CH[tag[0]]-.02)*(.35+.65*it))*S.chroma,HUE[tag[0]],a);}
+const rnd=s=>{const x=Math.sin(s*12.9898)*43758.5453;return x-Math.floor(x)};
+
+// 앨범 → 자리 목록. 한 장이 한 바퀴. 자리 하나 = 문장 하나, 곡 사이엔 빈자리
+function slots(list){const out=[];list.forEach((song,k)=>{if(k)for(let i=0;i<S.gap;i++)out.push(null);
+  song.n.forEach((n,i)=>{const m=song.m[i];if(m==='-'&&S.filler==='skip')return;out.push(m==='-'?null:{n,m,tag:song.tag[i]});});});
+  return out;}
+
+// 줄기 하나: 반지름 방향으로 뻗는 파형. 길이 = 글자 수
+function streak(c,th,half,r0,r1,g,seed){const N=64,L=[],Rr=[];
+  for(let i=0;i<=N;i++){const t=i/N,r=r0+(r1-r0)*t;let h=half*Math.sin(Math.PI*t)**S.taper;
+    if(g.m==='몸')h*=Math.max(0,1+S.rough*(rnd(seed*131+i)-.5)*2);
+    L.push([Math.cos(th-h)*r,Math.sin(th-h)*r]);Rr.push([Math.cos(th+h)*r,Math.sin(th+h)*r]);}
+  c.beginPath();L.concat(Rr.reverse()).forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();}
+
+let MAXN=1;
+function draw(cv,name,list){const dpr=devicePixelRatio||1,w=cv.clientWidth;cv.width=cv.height=Math.round(w*dpr);
+  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const R=w/2;c.translate(R,R);
+  c.beginPath();c.arc(0,0,R,0,7);c.fillStyle=VINYL[S.vinyl];c.fill();
+  const sl=slots(list),step=Math.PI*2/sl.length,r0=(S.label+S.inner)*R;
+  sl.forEach((g,i)=>{if(!g)return;const th=-Math.PI/2+(i+.5)*step,r1=r0+(S.outer*R-r0)*(g.n/MAXN)**S.lenPow;
+    streak(c,th,step/2*S.width,r0,r1,g,i);
+    if(g.m==='기억'){c.save();c.shadowBlur=S.blur*dpr;c.shadowColor=col(g.tag,.9);c.fillStyle=col(g.tag,.5);c.fill();c.restore();return;}
+    c.fillStyle=col(g.tag);c.fill();
+    if(g.m==='약속'&&S.gloss){c.beginPath();c.moveTo(Math.cos(th)*r0,Math.sin(th)*r0);c.lineTo(Math.cos(th)*r1,Math.sin(th)*r1);
+      c.lineWidth=Math.max(.5,step*r0*S.width*.25);c.strokeStyle=col(g.tag,S.gloss,.18);c.stroke();}
+  });
+  // 라벨: 어느 앨범인지 알려 주는 유일한 글자
+  const lr=S.label*R;c.beginPath();c.arc(0,0,lr,0,7);c.fillStyle=getComputedStyle(document.body).getPropertyValue('--label');c.fill();
+  c.fillStyle='#1b1916';c.textAlign='center';c.textBaseline='middle';c.font=`700 ${Math.max(10,lr*.17)}px ${getComputedStyle(document.body).getPropertyValue('--serif')}`;
+  c.fillText(name,0,-lr*.42);
+  c.beginPath();c.arc(0,0,Math.max(2,R*.012),0,7);c.fillStyle=getComputedStyle(document.body).getPropertyValue('--ground');c.fill();
+}
+
+let DATA=[];const discs=document.getElementById('discs'),cvs=ALBUMS.map(a=>{const cv=document.createElement('canvas');cv.setAttribute('role','img');cv.setAttribute('aria-label',a);discs.appendChild(cv);return cv;});
+function render(){ALBUMS.forEach((a,i)=>draw(cvs[i],a,DATA.filter(s=>s.a===a).sort((x,y)=>x.tr-y.tr)));
+  try{localStorage.setItem('lp2-S',JSON.stringify(S))}catch(e){}}
+
+// 조정 패널
+const panel=document.getElementById('panel'),toggle=document.getElementById('toggle');
+function buildPanel(){
+  panel.innerHTML=`<div class="row"><button data-k="vinyl" data-v="clear">투명 판</button><button data-k="vinyl" data-v="black">검정 판</button></div>
+    <div class="row"><button data-k="filler" data-v="gap">추임새: 빈자리</button><button data-k="filler" data-v="skip">추임새: 뺌</button></div>`+
+    SLIDERS.map(([k,t,a,b,st])=>`<label>${t}<output id="o-${k}">${S[k]}</output><input type="range" min="${a}" max="${b}" step="${st}" value="${S[k]}" data-s="${k}"></label>`).join('')+
+    `<div class="row"><button id="copy">값 복사</button><button id="reset">처음 값</button><button id="hide">닫기</button></div>`;
+  panel.querySelectorAll('[data-k]').forEach(b=>{b.setAttribute('aria-pressed',S[b.dataset.k]===b.dataset.v);b.onclick=()=>{S[b.dataset.k]=b.dataset.v;buildPanel();render();};});
+  panel.querySelectorAll('[data-s]').forEach(el=>el.oninput=()=>{S[el.dataset.s]=+el.value;document.getElementById('o-'+el.dataset.s).textContent=el.value;render();});
+  panel.querySelector('#copy').onclick=e=>{navigator.clipboard.writeText(JSON.stringify(S)).then(()=>e.target.textContent='복사됨');};
+  panel.querySelector('#reset').onclick=()=>{S={...S0};buildPanel();render();};
+  panel.querySelector('#hide').onclick=()=>{panel.hidden=true;toggle.hidden=false;};
+}
+toggle.onclick=()=>{panel.hidden=false;toggle.hidden=true;};
+if(new URLSearchParams(location.search).has('final'))panel.remove(),toggle.remove();else buildPanel();
+
+DATA=window.DATA;MAXN=Math.max(...DATA.flatMap(s=>s.n));render();
+addEventListener('resize',render);document.fonts&&document.fonts.ready.then(render);
+</script>
