@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>곡 하나 곡선 모듈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;700&family=Black+Han+Sans&family=Nanum+Myeongjo:wght@400&display=swap">
+<style>
+/* 곡 하나: 가사 단위가 곡선 위에 놓임. 가로 = 곡의 진행, 높낮이 = 고른 변수 */
+:root{--paper:#f4efe6;--ink:#2b2520;--mute:#9a8f84;--line:#ddd3c4;--panel:#efe8dc}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans KR",sans-serif;height:100%}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;height:100%}
+.stage{overflow:auto;position:relative}
+.head{position:sticky;left:0;padding:32px 40px 0}
+h1{font-family:"Gowun Batang",serif;font-size:40px;margin:0}
+.sub{color:var(--mute);font-size:13px;margin:4px 0 0}
+canvas{display:block}
+aside{background:var(--panel);border-left:1px solid var(--line);padding:20px 18px 40px;overflow:auto;font-size:13px}
+aside h2{font-size:14px;margin:18px 0 8px}
+aside label{display:block;margin:12px 0 4px;color:#5f564d}
+aside input[type=range]{width:100%}
+aside select{width:100%;font:inherit;padding:4px}
+aside textarea{width:100%;font:12px/1.5 "IBM Plex Sans KR",sans-serif;background:#fbf8f2;border:1px solid var(--line);padding:8px}
+aside .hint{color:var(--mute);font-size:11px;line-height:1.5}
+aside button{font:inherit;padding:6px 10px;border:1px solid var(--ink);background:none;cursor:pointer;margin-top:8px}
+.chk{display:flex;gap:8px;align-items:center;margin-top:10px}
+output{float:right;color:var(--mute)}
+#tip{position:fixed;pointer-events:none;background:#fff;border:1px solid var(--line);padding:6px 8px;font-size:12px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="head"><h1 id="title">Big Love</h1><p class="sub" id="sub">TEAM BABY 2번 트랙</p></div>
+    <canvas id="cv"></canvas>
+  </div>
+  <aside>
+    <h2>가사</h2>
+    <textarea id="lyr" rows="8" placeholder="한 줄에 의미 단위 하나씩"></textarea>
+    <div class="hint">가사는 파일에 저장되지 않습니다.</div>
+    <h2>태그</h2>
+    <textarea id="tags" rows="8"></textarea>
+    <div class="hint">한 줄에 단위 하나: 주제 태도 세기 방식 구조 다시부르는단위<br>주제 L 사랑, F 사람들, S 나 자신, H 가족 고향, W 세상 일상. 방식: 약속, 몸, 기억, 그외. 구조와 다시부르는단위가 없으면 - 와 0</div>
+    <button id="go">적용</button>
+
+    <h2>배치</h2>
+    <label>높낮이 = </label>
+    <select id="yvar"><option value="att">태도 (위가 밝음)</option><option value="int">세기 (위가 강함)</option><option value="flat">평평하게</option></select>
+    <label>높낮이 폭 <output></output></label><input id="amp" type="range" min="0" max="400" value="220">
+    <label>곡선 부드러움 <output></output></label><input id="ten" type="range" min="0" max="100" value="60">
+    <label>글자 간격 (글자 크기 대비 %) <output></output></label><input id="cs" type="range" min="60" max="160" value="100">
+    <label>확대 <output></output></label><input id="zoom" type="range" min="15" max="100" value="45">
+    <label>단위 사이 빈칸 <output></output></label><input id="ug" type="range" min="0" max="120" value="36">
+    <div class="chk"><input id="rot" type="checkbox" checked><span>글자가 곡선 방향으로 기울기</span></div>
+    <div class="chk"><input id="guide" type="checkbox"><span>곡선과 높이 눈금 보기</span></div>
+    <div class="chk"><input id="sec" type="checkbox" checked><span>구조 이름 보기</span></div>
+    <div class="chk"><input id="rep" type="checkbox" checked><span>다시 부르는 단위 잇기</span></div>
+
+    <h2>글자</h2>
+    <label>세기 1 크기 <output></output></label><input id="s1" type="range" min="10" max="60" value="18">
+    <label>세기 2 크기 <output></output></label><input id="s2" type="range" min="10" max="80" value="26">
+    <label>세기 3 크기 <output></output></label><input id="s3" type="range" min="10" max="100" value="38">
+    <label>밝기: 가장 어두움 <output></output></label><input id="lmin" type="range" min="15" max="60" value="34">
+    <label>밝기: 가장 밝음 <output></output></label><input id="lmax" type="range" min="45" max="92" value="74">
+    <label>색 진하기 <output></output></label><input id="chr" type="range" min="0" max="20" value="13">
+    <label>기억: 흐림 <output></output></label><input id="mblur" type="range" min="0" max="40" value="10">
+    <label>기억: 비침 <output></output></label><input id="mop" type="range" min="15" max="100" value="50">
+    <label>몸: 거침 <output></output></label><input id="rough" type="range" min="0" max="40" value="12">
+    <button id="copy">지금 값 복사</button>
+
+    <h2>글자 손으로 옮기기</h2>
+    <div class="chk"><input id="edit" type="checkbox"><span>글자 옮기기 켜기</span></div>
+    <div class="hint">켜면 글자를 끌어서 옮길 수 있습니다. 글자 위에서 Shift + 휠 = 돌리기, Alt + 휠 = 크기. 옮긴 값은 데이터로 정한 자리 위에 더해집니다.</div>
+    <button id="undoSel">고른 글자 되돌리기</button> <button id="undoAll">전체 되돌리기</button>
+    <button id="copyOff">옮긴 값 복사</button>
+    <textarea id="offIn" rows="3" placeholder="복사해 둔 옮긴 값을 붙여 넣고 불러오기"></textarea>
+    <button id="loadOff">불러오기</button>
+  </aside>
+</div>
+<div id="tip"></div>
+<script>
+const DEFAULT_TAGS=`L 5 3 그외 벌스 0
+L 4 3 그외 - 0
+L 4 3 약속 - 0
+L 5 2 기억 - 0
+L 5 3 약속 후렴 0
+L 4 3 약속 - 0
+L 5 3 그외 벌스 0
+L 5 3 기억 - 0
+L 5 3 약속 후렴 5
+L 4 3 약속 - 6
+L 5 3 그외 브리지 0
+L 5 3 그외 - 0
+L 5 3 약속 아웃트로 5
+L 5 3 약속 - 5
+L 4 2 그외 - 6
+L 5 3 약속 - 6`;
+const HUE={L:28,F:140,S:248,H:72,W:335}, CF={L:1,F:.6,S:.6,H:.8,W:.65};
+const FONT={약속:'700 SIZEpx "Gowun Batang", serif',몸:'400 SIZEpx "Black Han Sans", sans-serif',기억:'400 SIZEpx "Nanum Myeongjo", serif',그외:'WEIGHT SIZEpx "IBM Plex Sans KR", sans-serif'};
+function oklch(L,C,h){const A=C*Math.cos(h*Math.PI/180),B=C*Math.sin(h*Math.PI/180);
+ const l=(L+.3963377774*A+.2158037573*B)**3,m=(L-.1055613458*A-.0638541728*B)**3,s=(L-.0894841775*A-1.291485548*B)**3;
+ return [4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s]
+  .map(x=>{x=Math.max(0,Math.min(1,x));return Math.round(255*(x<=.0031308?12.92*x:1.055*x**(1/2.4)-.055))});}
+const $=id=>document.getElementById(id);
+const KEYS=['amp','ten','cs','zoom','ug','s1','s2','s3','lmin','lmax','chr','mblur','mop','rough'];
+const V=()=>({...Object.fromEntries(KEYS.map(k=>[k,+$(k).value])),yvar:$('yvar').value,rot:$('rot').checked,guide:$('guide').checked,sec:$('sec').checked,rep:$('rep').checked});
+let LINES=[],TAGS=[];
+$('tags').value=DEFAULT_TAGS;
+function parseTags(){return $('tags').value.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>{const p=s.split(/\s+/);return {top:p[0],att:+p[1],int:+p[2],m:p[3]||'그외',sec:p[4]&&p[4]!=='-'?p[4]:'',rep:+(p[5]||0)};});}
+function color(t,v,a=1){const L=(v.lmin+(v.lmax-v.lmin)*(t.att-1)/4)/100;const[r,g,b]=oklch(L,v.chr/100*CF[t.top],HUE[t.top]);return `rgba(${r},${g},${b},${a})`;}
+// 단위마다 높이 (0~1)
+function level(t,v){if(v.yvar==='att')return (t.att-1)/4;if(v.yvar==='int')return (t.int-1)/2;return .5;}
+// Catmull-Rom 곡선 위의 점
+function curve(pts,ten){return function(x){let i=pts.findIndex((p,k)=>k<pts.length-1&&x<=pts[k+1][0]);if(i<0)i=pts.length-2;if(pts.length<2)return pts[0][1];
+ const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];const u=(x-p1[0])/(p2[0]-p1[0]||1);
+ const s=ten/100;const m1=s*(p2[1]-p0[1])/2,m2=s*(p3[1]-p1[1])/2;const u2=u*u,u3=u2*u;
+ return (2*u3-3*u2+1)*p1[1]+(u3-2*u2+u)*m1+(-2*u3+3*u2)*p2[1]+(u3-u2)*m2;};}
+let HITS=[],ZOOM=1,GL=[],OFF={},SEL=null,DRAG=null;
+function render(){const v=V();document.querySelectorAll('aside label').forEach(l=>{const i=l.nextElementSibling;if(i&&i.type==='range'&&l.querySelector('output'))l.querySelector('output').textContent=i.value;});
+ const cv=$('cv'),ctx=cv.getContext('2d');
+ if(!LINES.length||LINES.length!==TAGS.length){cv.width=900;cv.height=200;ctx.fillStyle='#9a8f84';ctx.font='14px "IBM Plex Sans KR"';
+  ctx.fillText(LINES.length?`가사 ${LINES.length}줄, 태그 ${TAGS.length}줄입니다. 줄 수를 맞춰 주세요.`:'오른쪽에 가사를 붙여 넣고 적용을 누르세요.',40,80);return;}
+ // 가로 위치: 글자마다 한 칸, 단위 사이 빈칸
+ const units=LINES.map((s,i)=>({s:[...s],t:TAGS[i]}));let X=80;const top=170,H=v.amp,base=top+H+60;
+ units.forEach(u=>{u.size=[0,v.s1,v.s2,v.s3][u.t.int];u.step=u.size*v.cs/100;u.x0=X;u.x1=X+u.s.length*u.step;u.cx=(u.x0+u.x1)/2;u.y=top+H*(1-level(u.t,v));X=u.x1+v.ug;});
+ const W=X+80,Hc=base+140;const dpr=devicePixelRatio||1,z=v.zoom/100;cv.width=W*z*dpr;cv.height=Hc*z*dpr;cv.style.width=W*z+'px';cv.style.height=Hc*z+'px';ctx.setTransform(dpr*z,0,0,dpr*z,0,0);ZOOM=z;
+ ctx.clearRect(0,0,W,Hc);
+ const pts=[[units[0].x0,units[0].y],...units.map(u=>[u.cx,u.y]),[units.at(-1).x1,units.at(-1).y]];const Y=curve(pts,v.ten);
+ if(v.guide){ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=1;const n=v.yvar==='int'?3:5;for(let k=0;k<n;k++){const y=top+H*(1-k/(n-1));ctx.beginPath();ctx.moveTo(60,y);ctx.lineTo(W-40,y);ctx.stroke();ctx.fillStyle='#b5aa9d';ctx.font='11px "IBM Plex Sans KR"';ctx.fillText(String(k+1),40,y+4);}
+  ctx.beginPath();for(let x=units[0].x0;x<=units.at(-1).x1;x+=4){const y=Y(x);x===units[0].x0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.strokeStyle='rgba(0,0,0,.18)';ctx.stroke();}
+ HITS=[];GL=[];
+ units.forEach((u,ui)=>{const t=u.t,size=[0,v.s1,v.s2,v.s3][t.int];
+  let font=FONT[t.m].replace('SIZE',size).replace('WEIGHT',[0,300,500,700][t.int]);ctx.font=font;
+  ctx.save();if(t.m==='기억'){ctx.filter=`blur(${v.mblur/10}px)`;}
+  u.s.forEach((ch,k)=>{const x=u.x0+(k+.5)*u.step,y=Y(x);const a=Math.atan2(Y(x+2)-Y(x-2),4);
+   const key=ui+':'+k,o=OFF[key]||{dx:0,dy:0,r:0,s:1};const gx=x+o.dx,gy=y+o.dy;GL.push({key,x:gx,y:gy,size:size*o.s});
+   ctx.save();ctx.translate(gx,gy);if(v.rot)ctx.rotate(a);ctx.rotate(o.r);ctx.scale(o.s,o.s);ctx.textAlign='center';ctx.textBaseline='middle';
+   const op=t.m==='기억'?v.mop/100:1;ctx.fillStyle=color(t,v,op);
+   if(t.m==='몸'&&v.rough>0){const r=v.rough/10;for(let j=0;j<3;j++){ctx.fillText(ch,(Math.sin(k*7+j*3))*r,(Math.cos(k*5+j*2))*r*.7);}}
+   ctx.fillText(ch,0,0);ctx.restore();});
+  ctx.restore();
+  HITS.push({x0:u.x0,x1:u.x1,y:u.y,i:ui});
+  if(v.sec&&t.sec){ctx.fillStyle='#a0968b';ctx.font='12px "IBM Plex Sans KR"';ctx.textAlign='left';ctx.fillText(t.sec,u.x0,base+40);ctx.fillRect(u.x0,base+48,1,8);}
+  ctx.fillStyle='#c4b9ac';ctx.font='11px "IBM Plex Sans KR"';ctx.textAlign='left';ctx.fillText(String(ui+1),u.x0,base+20);});
+ if(SEL){const g=GL.find(g=>g.key===SEL);if(g){ctx.save();ctx.strokeStyle='#2b6cb0';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.strokeRect(g.x-g.size/2-3,g.y-g.size/2-3,g.size+6,g.size+6);ctx.restore();}}
+ if(v.rep){units.forEach((u,ui)=>{if(!u.t.rep)return;const o=units[u.t.rep-1];if(!o)return;const xa=o.cx,xb=u.cx,yy=base+70,hh=Math.min(60,(xb-xa)/8);
+  ctx.beginPath();ctx.moveTo(xa,yy);ctx.bezierCurveTo(xa,yy+hh,xb,yy+hh,xb,yy);ctx.strokeStyle='rgba(120,100,90,.35)';ctx.lineWidth=1;ctx.stroke();});}
+}
+$('go').onclick=()=>{LINES=$('lyr').value.split('\n').map(s=>s.trim()).filter(Boolean);TAGS=parseTags();render();};
+document.querySelectorAll('aside input,aside select').forEach(i=>i.addEventListener('input',render));
+$('cv').addEventListener('mousemove',e=>{const r=$('cv').getBoundingClientRect(),x=(e.clientX-r.left)/ZOOM;const h=HITS.find(h=>x>=h.x0&&x<=h.x1);const tip=$('tip');
+ if(!h){tip.style.display='none';return;}const t=TAGS[h.i];tip.style.display='block';tip.style.left=e.clientX+12+'px';tip.style.top=e.clientY+12+'px';
+ tip.textContent=`${h.i+1}번 단위: 주제 ${t.top}, 태도 ${t.att}, 세기 ${t.int}, ${t.m}`;});
+const pos=e=>{const r=$('cv').getBoundingClientRect();return [(e.clientX-r.left)/ZOOM,(e.clientY-r.top)/ZOOM];};
+const pick=(x,y)=>{let best=null,bd=1e9;GL.forEach(g=>{const d=Math.hypot(g.x-x,g.y-y);if(d<g.size*.6&&d<bd){bd=d;best=g;}});return best;};
+const off=k=>OFF[k]||(OFF[k]={dx:0,dy:0,r:0,s:1});
+$('cv').addEventListener('mousedown',e=>{if(!$('edit').checked)return;const[x,y]=pos(e);const g=pick(x,y);SEL=g?g.key:null;if(g){const o=off(g.key);DRAG={x,y,dx:o.dx,dy:o.dy};}render();});
+addEventListener('mousemove',e=>{if(!DRAG||!SEL)return;const[x,y]=pos(e);const o=off(SEL);o.dx=DRAG.dx+(x-DRAG.x);o.dy=DRAG.dy+(y-DRAG.y);render();});
+addEventListener('mouseup',()=>{DRAG=null;});
+$('cv').addEventListener('wheel',e=>{if(!$('edit').checked||!(e.shiftKey||e.altKey))return;const[x,y]=pos(e);const g=pick(x,y);if(!g)return;e.preventDefault();SEL=g.key;const o=off(g.key);
+ if(e.shiftKey)o.r+=(e.deltaY>0?1:-1)*Math.PI/90;else o.s=Math.max(.2,Math.min(4,o.s*(e.deltaY>0?.95:1.05)));render();},{passive:false});
+addEventListener('keydown',e=>{if(!$('edit').checked||!SEL)return;const o=off(SEL),st=e.shiftKey?10:1;
+ if(e.key==='ArrowLeft')o.dx-=st;else if(e.key==='ArrowRight')o.dx+=st;else if(e.key==='ArrowUp')o.dy-=st;else if(e.key==='ArrowDown')o.dy+=st;else return;e.preventDefault();render();});
+$('undoSel').onclick=()=>{if(SEL){delete OFF[SEL];render();}};
+$('undoAll').onclick=()=>{OFF={};SEL=null;render();};
+$('copyOff').onclick=()=>{const t=JSON.stringify(OFF);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{$('offIn').value=t;});$('copyOff').textContent='복사됨';setTimeout(()=>$('copyOff').textContent='옮긴 값 복사',1500);};
+$('loadOff').onclick=()=>{try{OFF=JSON.parse($('offIn').value)||{};render();}catch(err){$('offIn').value='형식이 맞지 않습니다';}};
+$('copy').onclick=()=>{const t=JSON.stringify(V());(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{});$('copy').textContent='복사됨';setTimeout(()=>$('copy').textContent='지금 값 복사',1500);};
+document.fonts&&document.fonts.ready.then(render);render();
+</script>
+</body>
+</html>

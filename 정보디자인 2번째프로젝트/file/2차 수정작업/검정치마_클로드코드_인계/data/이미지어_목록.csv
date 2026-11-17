@@ -1,0 +1,489 @@
+﻿앨범,곡,문장 번호,종류,단어,범주,주제,태도(1~5),세기(1~3)
+201,Antifreeze,2,이미지어,태양,"불, 빛",L,3,2
+201,Antifreeze,2,이미지어,달,"불, 빛",L,3,2
+201,Antifreeze,4,이미지어,비,물,W,2,1
+201,Antifreeze,4,이미지어,하늘,"계절, 날씨",W,2,1
+201,Antifreeze,6,이미지어,비,물,W,3,1
+201,Antifreeze,7,이미지어,눈,"계절, 날씨",W,3,2
+201,Antifreeze,9,직유,거울,사물,L,4,2
+201,Antifreeze,9,이미지어,거리,"길, 탈것, 장소",L,4,2
+201,Antifreeze,9,이미지어,거울,사물,L,4,2
+201,Antifreeze,11,이미지어,모래,물,L,5,3
+201,Antifreeze,13,이미지어,숨,몸,W,2,2
+201,Antifreeze,16,이미지어,모래,물,L,5,3
+201,Antifreeze,20,이미지어,길,"길, 탈것, 장소",L,4,2
+201,Antifreeze,21,이미지어,길,"길, 탈것, 장소",L,4,2
+201,Avant Garde Kim,1,이미지어,홍대,"길, 탈것, 장소",W,2,2
+201,Avant Garde Kim,2,직유,바보,,W,2,2
+201,Avant Garde Kim,9,이미지어,불,"불, 빛",W,2,2
+201,Avant Garde Kim,9,이미지어,담배,"불, 빛",W,2,2
+201,Avant Garde Kim,11,이미지어,star,"불, 빛",W,2,2
+201,Avant Garde Kim,12,이미지어,홍대,"길, 탈것, 장소",W,2,1
+201,Avant Garde Kim,12,이미지어,star,"불, 빛",W,2,1
+201,Avant Garde Kim,13,이미지어,기타,사물,W,2,2
+201,Avant Garde Kim,14,이미지어,밤,"어둠, 그늘",W,2,2
+201,Avant Garde Kim,18,이미지어,불,"불, 빛",W,2,2
+201,Avant Garde Kim,18,이미지어,담배,"불, 빛",W,2,2
+201,Avant Garde Kim,20,이미지어,star,"불, 빛",W,2,2
+201,Avant Garde Kim,21,이미지어,홍대,"길, 탈것, 장소",W,2,1
+201,Avant Garde Kim,21,이미지어,star,"불, 빛",W,2,1
+201,Fling : Fig From France,1,이미지어,여름,"계절, 날씨",L,4,2
+201,Fling : Fig From France,1,이미지어,머리,몸,L,4,2
+201,Fling : Fig From France,2,직유,뱀,,L,4,2
+201,Fling : Fig From France,2,이미지어,목,몸,L,4,2
+201,Fling : Fig From France,7,이미지어,술,사물,L,4,2
+201,Fling : Fig From France,8,이미지어,밤,"어둠, 그늘",L,4,3
+201,Fling : Fig From France,9,이미지어,몸,몸,L,3,2
+201,Fling : Fig From France,9,이미지어,눈물,물,L,3,2
+201,Fling : Fig From France,13,이미지어,달,"불, 빛",L,2,2
+201,Fling : Fig From France,14,이미지어,달,"불, 빛",L,2,2
+201,Fling : Fig From France,15,이미지어,달,"불, 빛",L,2,2
+201,Fling : Fig From France,16,이미지어,달,"불, 빛",L,2,2
+201,Fling : Fig From France,17,이미지어,달,"불, 빛",L,2,2
+201,I Like Watching You Go,1,직유,watching,,L,2,2
+201,I Like Watching You Go,5,이미지어,입,몸,L,3,2
+201,I Like Watching You Go,9,이미지어,침대,"방, 집",L,2,2
+201,I Like Watching You Go,11,이미지어,학교,"길, 탈것, 장소",L,2,2
+201,I Like Watching You Go,12,직유,watching,,L,2,2
+201,Kiss and Tell,5,이미지어,heart,몸,L,2,2
+201,Kiss and Tell,10,이미지어,침대,"방, 집",L,2,2
+201,Kiss and Tell,10,이미지어,머리,몸,L,2,2
+201,Kiss and Tell,12,이미지어,섬,물,L,1,2
+201,Kiss and Tell,13,이미지어,침대,"방, 집",L,1,2
+201,Kiss and Tell,13,이미지어,머리,몸,L,1,2
+201,Kiss and Tell,14,이미지어,섬,물,L,1,2
+201,Le Fou Muet,3,이미지어,겨울,"계절, 날씨",L,2,3
+201,Le Fou Muet,4,직유,무늬,,L,2,2
+201,Le Fou Muet,4,이미지어,태양,"불, 빛",L,2,2
+201,Stand Still ('07 Korean Ver.),2,이미지어,집,"방, 집",S,3,2
+201,Stand Still ('07 Korean Ver.),6,이미지어,길,"길, 탈것, 장소",S,2,2
+201,Stand Still ('07 Korean Ver.),11,직유,바보,,S,4,3
+201,Stand Still ('07 Korean Ver.),14,이미지어,밤,"어둠, 그늘",S,4,3
+201,Stand Still ('07 Korean Ver.),17,이미지어,다리,몸,S,4,3
+201,Stand Still ('07 Korean Ver.),22,직유,바보,,S,4,3
+201,Stand Still ('07 Korean Ver.),27,직유,바보,,S,4,3
+201,Tangled,1,이미지어,dark,"어둠, 그늘",L,2,2
+201,Tangled,10,이미지어,summer,"계절, 날씨",L,2,2
+201,Tangled,11,이미지어,wind,"계절, 날씨",L,2,2
+201,Tangled,11,이미지어,rain,물,L,2,2
+201,Tangled,13,이미지어,입술,몸,L,1,3
+201,Tangled,14,이미지어,밤,"어둠, 그늘",L,1,2
+201,Tangled,14,이미지어,눈물,물,L,1,2
+201,Tangled,17,이미지어,summer,"계절, 날씨",L,2,2
+201,Tangled,18,이미지어,wind,"계절, 날씨",L,2,2
+201,Tangled,18,이미지어,rain,물,L,2,2
+201,강아지,3,이미지어,개,동물,S,2,2
+201,강아지,7,이미지어,손,몸,W,2,2
+201,강아지,7,이미지어,차,"길, 탈것, 장소",W,2,2
+201,강아지,7,이미지어,개,동물,W,2,2
+201,상아,1,이미지어,불,"불, 빛",F,2,2
+201,상아,1,이미지어,차,"길, 탈것, 장소",F,2,2
+201,상아,2,직유,나방,,F,2,2
+201,상아,4,이미지어,머리,몸,F,2,2
+201,상아,6,이미지어,손,몸,S,2,1
+201,상아,11,이미지어,물,물,F,2,2
+201,상아,12,이미지어,새벽,"어둠, 그늘",F,2,2
+201,상아,13,이미지어,불,"불, 빛",F,2,2
+201,상아,13,이미지어,차,"길, 탈것, 장소",F,2,2
+201,상아,14,직유,나방,,F,2,2
+201,좋아해줘,3,직유,사춘기,,L,4,2
+201,좋아해줘,3,이미지어,서울,"길, 탈것, 장소",L,4,2
+DYWB,Ariel,3,이미지어,몸,몸,L,3,2
+DYWB,Ariel,4,직유,변명,,L,2,2
+DYWB,Ariel,4,직유,변명,,L,2,2
+DYWB,Ariel,7,이미지어,호수,물,L,3,1
+DYWB,Ariel,7,이미지어,바다,물,L,3,1
+DYWB,Ariel,7,이미지어,바람,"계절, 날씨",L,3,1
+DYWB,Ariel,14,이미지어,새,동물,L,2,2
+DYWB,International Love Song,3,이미지어,rain,물,L,4,3
+DYWB,International Love Song,12,이미지어,rain,물,L,4,3
+DYWB,International Love Song,22,이미지어,heart,몸,L,4,2
+DYWB,Love Shine,2,이미지어,바다,물,L,3,2
+DYWB,Love Shine,6,이미지어,light,"불, 빛",L,4,3
+DYWB,Love Shine,9,이미지어,sea,물,L,4,2
+DYWB,Love Shine,12,이미지어,숨,몸,L,4,2
+DYWB,Love Shine,12,이미지어,입,몸,L,4,2
+DYWB,Love Shine,13,이미지어,심장,몸,L,3,2
+DYWB,Love Shine,15,이미지어,light,"불, 빛",L,4,3
+DYWB,Love Shine,18,이미지어,sea,물,L,4,2
+DYWB,Love Shine,21,이미지어,눈,"계절, 날씨",L,3,2
+DYWB,Love Shine,24,이미지어,light,"불, 빛",L,4,3
+DYWB,Love Shine,27,이미지어,sea,물,L,4,2
+DYWB,기사도,1,이미지어,밤,"어둠, 그늘",L,2,2
+DYWB,기사도,2,이미지어,방,"방, 집",L,2,2
+DYWB,기사도,3,이미지어,입,몸,L,2,2
+DYWB,기사도,5,이미지어,밤,"어둠, 그늘",L,2,2
+DYWB,기사도,6,이미지어,술,사물,L,2,2
+DYWB,기사도,8,이미지어,집,"방, 집",L,2,2
+DYWB,기사도,9,이미지어,얼굴,몸,L,2,2
+DYWB,기사도,9,이미지어,길,"길, 탈것, 장소",L,2,2
+DYWB,기사도,12,이미지어,밤,"어둠, 그늘",L,2,2
+DYWB,기사도,13,이미지어,밤,"어둠, 그늘",L,2,2
+DYWB,기사도,16,이미지어,밤,"어둠, 그늘",L,2,2
+DYWB,기사도,16,이미지어,머리,몸,L,2,2
+DYWB,기사도,17,이미지어,눈물,물,L,1,2
+DYWB,기사도,19,이미지어,밤,"어둠, 그늘",L,1,2
+DYWB,기사도,20,이미지어,얼굴,몸,L,2,2
+DYWB,기사도,20,이미지어,길,"길, 탈것, 장소",L,2,2
+DYWB,기사도,23,이미지어,목,몸,L,2,2
+DYWB,기사도,23,이미지어,길,"길, 탈것, 장소",L,2,2
+DYWB,날씨,2,이미지어,날씨,"계절, 날씨",F,3,1
+DYWB,날씨,3,이미지어,눈,"계절, 날씨",F,3,2
+DYWB,날씨,6,이미지어,날씨,"계절, 날씨",F,3,1
+DYWB,날씨,7,이미지어,날씨,"계절, 날씨",F,2,2
+DYWB,날씨,8,이미지어,거리,"길, 탈것, 장소",F,2,2
+DYWB,날씨,9,이미지어,숨,몸,F,3,1
+DYWB,날씨,10,이미지어,숨,몸,F,2,2
+DYWB,날씨,12,이미지어,날씨,"계절, 날씨",F,2,3
+DYWB,무임승차,1,이미지어,눈,"계절, 날씨",F,2,2
+DYWB,무임승차,2,이미지어,손,몸,F,2,2
+DYWB,무임승차,3,이미지어,입,몸,F,2,2
+DYWB,무임승차,5,이미지어,수영,물,F,2,2
+DYWB,무임승차,13,이미지어,눈,"계절, 날씨",F,2,2
+DYWB,무임승차,17,이미지어,항해,물,S,2,2
+DYWB,무임승차,19,이미지어,눈,"계절, 날씨",S,2,2
+DYWB,무임승차,20,이미지어,배,물,F,2,2
+DYWB,아침식사,5,이미지어,햇살,"불, 빛",W,2,2
+DYWB,앵무새,1,이미지어,바다,물,S,2,2
+DYWB,앵무새,4,이미지어,새,동물,S,2,2
+DYWB,앵무새,4,이미지어,섬,물,S,2,2
+DYWB,앵무새,5,직유,거짓말,,S,2,2
+DYWB,앵무새,5,이미지어,배,물,S,2,2
+DYWB,앵무새,9,이미지어,앵무새,동물,L,4,2
+DYWB,앵무새,9,이미지어,머리,몸,L,4,2
+DYWB,앵무새,10,이미지어,고향,"길, 탈것, 장소",H,3,1
+DYWB,앵무새,14,이미지어,앵무새,동물,L,4,2
+DYWB,앵무새,14,이미지어,머리,몸,L,4,2
+DYWB,외아들,14,이미지어,집,"방, 집",H,2,2
+DYWB,외아들,16,이미지어,눈,"계절, 날씨",F,2,2
+DYWB,외아들,17,이미지어,얼굴,몸,F,2,2
+DYWB,음악하는 여자,3,직유,피콜,,F,2,2
+DYWB,음악하는 여자,11,이미지어,머리,몸,F,2,2
+DYWB,음악하는 여자,12,직유,여고,,F,2,2
+DYWB,음악하는 여자,14,이미지어,기타,사물,F,2,2
+DYWB,이별노래,1,이미지어,배,물,F,2,2
+DYWB,이별노래,2,이미지어,파도,물,F,2,2
+DYWB,이별노래,5,이미지어,배,물,S,3,2
+DYWB,이별노래,5,이미지어,바람,"계절, 날씨",S,3,2
+DYWB,이별노래,8,이미지어,물,물,F,1,2
+DYWB,이별노래,9,이미지어,배,물,F,2,2
+DYWB,이별노래,11,이미지어,길,"길, 탈것, 장소",F,1,3
+DYWB,젊은 우리 사랑,2,이미지어,몸,몸,L,1,2
+DYWB,젊은 우리 사랑,4,이미지어,눈물,물,L,1,2
+DYWB,젊은 우리 사랑,6,이미지어,입,몸,L,2,2
+DYWB,젊은 우리 사랑,8,이미지어,눈물,물,L,1,2
+DYWB,젊은 우리 사랑,9,이미지어,피,몸,S,2,2
+DYWB,젊은 우리 사랑,13,이미지어,피,몸,S,2,2
+DYWB,젊은 우리 사랑,15,이미지어,눈물,물,L,1,2
+DYWB,젊은 우리 사랑,16,이미지어,피,몸,S,2,2
+DYWB,젊은 우리 사랑,20,이미지어,피,몸,L,2,3
+TEAM BABY,Big Love,6,이미지어,눈,"계절, 날씨",L,5,2
+TEAM BABY,Big Love,9,직유,실,,L,5,3
+TEAM BABY,Big Love,11,이미지어,혀,몸,L,4,2
+TEAM BABY,Big Love,15,직유,실,,L,5,3
+TEAM BABY,Big Love,21,직유,실,,L,5,3
+TEAM BABY,EVERYTHING,6,이미지어,비,물,L,4,1
+TEAM BABY,EVERYTHING,6,이미지어,방,"방, 집",L,4,1
+TEAM BABY,EVERYTHING,7,이미지어,눈,"계절, 날씨",L,5,2
+TEAM BABY,EVERYTHING,8,이미지어,얼굴,몸,L,4,2
+TEAM BABY,EVERYTHING,15,이미지어,여름,"계절, 날씨",L,5,3
+TEAM BABY,Love Is All,3,이미지어,술,사물,L,4,2
+TEAM BABY,Love Is All,3,이미지어,눈,"계절, 날씨",L,4,2
+TEAM BABY,Love Is All,5,이미지어,입,몸,L,4,3
+TEAM BABY,Love Is All,6,이미지어,술,사물,L,3,3
+TEAM BABY,Love Is All,6,이미지어,장미,"꽃, 식물",L,3,3
+TEAM BABY,나랑 아니면,1,이미지어,몸,몸,L,5,3
+TEAM BABY,나랑 아니면,2,이미지어,눈,"계절, 날씨",L,5,3
+TEAM BABY,나랑 아니면,2,이미지어,입,몸,L,5,3
+TEAM BABY,난 아니에요,1,이미지어,불,"불, 빛",S,3,1
+TEAM BABY,난 아니에요,1,이미지어,술,사물,S,3,1
+TEAM BABY,난 아니에요,4,이미지어,별,"불, 빛",S,3,2
+TEAM BABY,난 아니에요,13,이미지어,별,"불, 빛",S,3,2
+TEAM BABY,내 고향 서울엔,1,이미지어,꽃,"꽃, 식물",H,4,1
+TEAM BABY,내 고향 서울엔,1,이미지어,집,"방, 집",H,4,1
+TEAM BABY,내 고향 서울엔,2,이미지어,서울,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,2,이미지어,고향,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,2,이미지어,눈,"계절, 날씨",H,3,2
+TEAM BABY,내 고향 서울엔,4,이미지어,봄,"계절, 날씨",H,3,1
+TEAM BABY,내 고향 서울엔,5,이미지어,서울,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,5,이미지어,고향,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,5,이미지어,눈,"계절, 날씨",H,3,2
+TEAM BABY,내 고향 서울엔,6,이미지어,겨울,"계절, 날씨",H,3,2
+TEAM BABY,내 고향 서울엔,6,이미지어,서울,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,6,이미지어,고향,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,6,이미지어,눈,"계절, 날씨",H,3,2
+TEAM BABY,내 고향 서울엔,8,이미지어,홍대,"길, 탈것, 장소",L,3,2
+TEAM BABY,내 고향 서울엔,8,이미지어,집,"방, 집",L,3,2
+TEAM BABY,내 고향 서울엔,8,이미지어,거리,"길, 탈것, 장소",L,3,2
+TEAM BABY,내 고향 서울엔,10,이미지어,서울,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,10,이미지어,고향,"길, 탈것, 장소",H,3,2
+TEAM BABY,내 고향 서울엔,10,이미지어,눈,"계절, 날씨",H,3,2
+TEAM BABY,내 고향 서울엔,11,이미지어,눈,"계절, 날씨",L,3,2
+TEAM BABY,내 고향 서울엔,11,이미지어,서울,"길, 탈것, 장소",L,3,2
+TEAM BABY,폭죽과 풍선들,2,직유,그때,,L,4,2
+TEAM BABY,폭죽과 풍선들,4,이미지어,폭죽,"불, 빛",L,4,2
+TEAM BABY,폭죽과 풍선들,10,이미지어,손,몸,F,3,2
+TEAM BABY,한시 오분 (1:05),1,직유,영화,,L,5,2
+TEAM BABY,한시 오분 (1:05),2,이미지어,밤,"어둠, 그늘",L,4,2
+TEAM BABY,한시 오분 (1:05),5,직유,기계,,L,3,2
+TEAM BABY,한시 오분 (1:05),8,직유,시계,사물,L,5,3
+TEAM BABY,한시 오분 (1:05),8,이미지어,시계,사물,L,5,3
+TEAM BABY,한시 오분 (1:05),13,직유,시계,사물,L,5,3
+TEAM BABY,한시 오분 (1:05),13,이미지어,시계,사물,L,5,3
+TEAM BABY,혜야,3,이미지어,강,물,L,4,2
+TEAM BABY,혜야,3,이미지어,바다,물,L,4,2
+TEAM BABY,혜야,5,이미지어,새벽,"어둠, 그늘",L,2,2
+TEAM BABY,혜야,11,이미지어,해,"불, 빛",L,2,2
+TEAM BABY,혜야,11,이미지어,길,"길, 탈것, 장소",L,2,2
+TEAM BABY,혜야,12,이미지어,불,"불, 빛",L,2,2
+TEAM BABY,혜야,12,이미지어,tv,사물,L,2,2
+THIRSTY,Bollywood,3,이미지어,별,"불, 빛",L,2,2
+THIRSTY,Bollywood,3,이미지어,고향,"길, 탈것, 장소",L,2,2
+THIRSTY,Bollywood,4,이미지어,눈물,물,L,2,2
+THIRSTY,Bollywood,10,이미지어,티비,사물,L,2,2
+THIRSTY,Bollywood,13,이미지어,폭죽,"불, 빛",L,3,2
+THIRSTY,Bollywood,13,이미지어,바람,"계절, 날씨",L,3,2
+THIRSTY,Bollywood,13,이미지어,풍선,사물,L,3,2
+THIRSTY,Bollywood,13,이미지어,얼굴,몸,L,3,2
+THIRSTY,Bollywood,14,이미지어,비디오,사물,L,3,2
+THIRSTY,Bollywood,14,이미지어,민들레,"꽃, 식물",L,3,2
+THIRSTY,Bollywood,15,이미지어,폭죽,"불, 빛",L,3,2
+THIRSTY,Bollywood,15,이미지어,바람,"계절, 날씨",L,3,2
+THIRSTY,Bollywood,15,이미지어,풍선,사물,L,3,2
+THIRSTY,Bollywood,15,이미지어,얼굴,몸,L,3,2
+THIRSTY,Bollywood,16,이미지어,민들레,"꽃, 식물",L,3,2
+THIRSTY,Bollywood,16,이미지어,비디오,사물,L,3,2
+THIRSTY,Bollywood,18,이미지어,정원,"꽃, 식물",L,4,2
+THIRSTY,Bollywood,18,이미지어,눈,"계절, 날씨",L,4,2
+THIRSTY,Bollywood,19,이미지어,밤,"어둠, 그늘",L,4,3
+THIRSTY,Bollywood,22,이미지어,비디오,사물,L,2,2
+THIRSTY,Bollywood,23,이미지어,폭죽,"불, 빛",L,3,2
+THIRSTY,Bollywood,23,이미지어,바람,"계절, 날씨",L,3,2
+THIRSTY,Bollywood,23,이미지어,풍선,사물,L,3,2
+THIRSTY,Bollywood,23,이미지어,얼굴,몸,L,3,2
+THIRSTY,Bollywood,24,이미지어,민들레,"꽃, 식물",L,3,2
+THIRSTY,Bollywood,24,이미지어,비디오,사물,L,3,2
+THIRSTY,Bollywood,25,이미지어,밤,"어둠, 그늘",L,1,2
+THIRSTY,Bollywood,27,이미지어,밤,"어둠, 그늘",L,1,2
+THIRSTY,Lester Burnham,11,이미지어,허물,몸,L,2,2
+THIRSTY,Lester Burnham,12,이미지어,목,몸,L,2,3
+THIRSTY,Put Me On Drugs,1,이미지어,drugs,사물,L,1,3
+THIRSTY,Put Me On Drugs,2,이미지어,drugs,사물,L,1,3
+THIRSTY,Put Me On Drugs,5,이미지어,drugs,사물,L,1,3
+THIRSTY,Put Me On Drugs,6,이미지어,drugs,사물,L,1,2
+THIRSTY,Put Me On Drugs,9,이미지어,빛,"불, 빛",L,1,2
+THIRSTY,Put Me On Drugs,10,이미지어,방,"방, 집",L,1,2
+THIRSTY,Put Me On Drugs,13,이미지어,목,몸,L,1,3
+THIRSTY,Put Me On Drugs,17,이미지어,drugs,사물,L,1,3
+THIRSTY,Put Me On Drugs,18,이미지어,drugs,사물,L,1,3
+THIRSTY,광견일기,2,이미지어,길,"길, 탈것, 장소",L,2,3
+THIRSTY,광견일기,3,이미지어,손,몸,L,2,2
+THIRSTY,광견일기,3,이미지어,입,몸,L,2,2
+THIRSTY,광견일기,10,이미지어,몸,몸,L,1,2
+THIRSTY,광견일기,10,이미지어,침대,"방, 집",L,1,2
+THIRSTY,광견일기,13,이미지어,눈물,물,L,1,3
+THIRSTY,그늘은 그림자로,1,이미지어,그늘,"어둠, 그늘",L,2,2
+THIRSTY,그늘은 그림자로,3,이미지어,집,"방, 집",L,1,2
+THIRSTY,그늘은 그림자로,5,이미지어,입,몸,L,2,2
+THIRSTY,그늘은 그림자로,11,이미지어,그늘,"어둠, 그늘",L,2,2
+THIRSTY,그늘은 그림자로,13,이미지어,집,"방, 집",L,1,2
+THIRSTY,그늘은 그림자로,17,이미지어,그늘,"어둠, 그늘",L,2,2
+THIRSTY,그늘은 그림자로,18,이미지어,그늘,"어둠, 그늘",L,2,2
+THIRSTY,맑고 묽게,3,이미지어,몸,몸,L,3,3
+THIRSTY,맑고 묽게,3,이미지어,손목,몸,L,3,3
+THIRSTY,맑고 묽게,3,이미지어,피,몸,L,3,3
+THIRSTY,맑고 묽게,5,이미지어,물,물,L,4,2
+THIRSTY,맑고 묽게,7,이미지어,심장,몸,L,3,2
+THIRSTY,맑고 묽게,9,이미지어,물,물,L,4,2
+THIRSTY,맑고 묽게,11,이미지어,눈썹,몸,L,3,2
+THIRSTY,맑고 묽게,11,이미지어,무릎,몸,L,3,2
+THIRSTY,맑고 묽게,11,이미지어,빗방울,물,L,3,2
+THIRSTY,맑고 묽게,12,이미지어,이불,"방, 집",L,1,2
+THIRSTY,맑고 묽게,12,이미지어,꽃,"꽃, 식물",L,1,2
+THIRSTY,맑고 묽게,12,이미지어,숨,몸,L,1,2
+THIRSTY,맑고 묽게,12,이미지어,잎,"꽃, 식물",L,1,2
+THIRSTY,맑고 묽게,13,이미지어,잎,"꽃, 식물",L,2,2
+THIRSTY,빨간 나를,1,이미지어,목,몸,L,2,2
+THIRSTY,빨간 나를,1,이미지어,침대,"방, 집",L,2,2
+THIRSTY,빨간 나를,2,이미지어,택시,"길, 탈것, 장소",L,2,2
+THIRSTY,빨간 나를,2,이미지어,밤,"어둠, 그늘",L,2,2
+THIRSTY,빨간 나를,3,이미지어,옷,사물,L,2,1
+THIRSTY,빨간 나를,5,이미지어,심장,몸,L,3,3
+THIRSTY,빨간 나를,6,이미지어,달력,사물,L,2,2
+THIRSTY,빨간 나를,7,이미지어,선물,사물,L,2,2
+THIRSTY,상수역,1,이미지어,밤,"어둠, 그늘",L,2,2
+THIRSTY,상수역,1,이미지어,역,"길, 탈것, 장소",L,2,2
+THIRSTY,상수역,4,이미지어,눈,"계절, 날씨",L,2,2
+THIRSTY,상수역,5,이미지어,방,"방, 집",L,2,2
+THIRSTY,상수역,7,직유,바보,,L,1,2
+THIRSTY,상수역,11,이미지어,pink,색,L,3,2
+THIRSTY,상수역,13,이미지어,heart,몸,L,3,2
+THIRSTY,상수역,16,이미지어,pink,색,L,3,2
+THIRSTY,상수역,18,이미지어,heart,몸,L,3,2
+THIRSTY,상수역,21,이미지어,택시,"길, 탈것, 장소",L,1,2
+THIRSTY,상수역,21,이미지어,손,몸,L,1,2
+THIRSTY,상수역,22,직유,종이,사물,L,1,2
+THIRSTY,상수역,22,이미지어,심장,몸,L,1,2
+THIRSTY,상수역,22,이미지어,종이,사물,L,1,2
+THIRSTY,섬 (Queen of Diamonds),1,이미지어,밤,"어둠, 그늘",L,2,1
+THIRSTY,섬 (Queen of Diamonds),2,이미지어,해,"불, 빛",L,2,1
+THIRSTY,섬 (Queen of Diamonds),3,이미지어,불빛,"불, 빛",L,2,1
+THIRSTY,섬 (Queen of Diamonds),5,이미지어,티비,사물,L,2,2
+THIRSTY,섬 (Queen of Diamonds),7,이미지어,썰물,물,L,2,2
+THIRSTY,섬 (Queen of Diamonds),7,이미지어,섬,물,L,2,2
+THIRSTY,섬 (Queen of Diamonds),12,이미지어,새벽,"어둠, 그늘",L,2,1
+THIRSTY,섬 (Queen of Diamonds),16,이미지어,양말,사물,L,1,2
+THIRSTY,섬 (Queen of Diamonds),18,이미지어,썰물,물,L,2,2
+THIRSTY,섬 (Queen of Diamonds),18,이미지어,섬,물,L,2,2
+THIRSTY,섬 (Queen of Diamonds),21,이미지어,섬,물,L,1,2
+THIRSTY,틀린질문,15,이미지어,심장,몸,S,1,3
+THIRSTY,틀린질문,15,이미지어,입,몸,S,1,3
+THIRSTY,틀린질문,17,이미지어,목,몸,S,2,3
+THIRSTY,틀린질문,17,이미지어,물,물,S,2,3
+THIRSTY,틀린질문,21,이미지어,목,몸,W,1,3
+THIRSTY,틀린질문,21,이미지어,송곳니,몸,W,1,3
+THIRSTY,피와 갈증 (King of Hurts),1,이미지어,불,"불, 빛",L,2,2
+THIRSTY,피와 갈증 (King of Hurts),5,이미지어,황금,사물,L,3,2
+THIRSTY,피와 갈증 (King of Hurts),5,이미지어,입술,몸,L,3,2
+THIRSTY,피와 갈증 (King of Hurts),6,이미지어,불,"불, 빛",L,2,2
+THIRSTY,피와 갈증 (King of Hurts),9,이미지어,꽃잎,"꽃, 식물",L,2,2
+THIRSTY,피와 갈증 (King of Hurts),9,이미지어,밤,"어둠, 그늘",L,2,2
+THIRSTY,피와 갈증 (King of Hurts),14,이미지어,술,사물,L,1,2
+THIRSTY,피와 갈증 (King of Hurts),14,이미지어,눈,"계절, 날씨",L,1,2
+THIRSTY,피와 갈증 (King of Hurts),17,이미지어,빛,"불, 빛",L,1,3
+THIRSTY,피와 갈증 (King of Hurts),19,이미지어,어둠,"어둠, 그늘",L,2,2
+THIRSTY,피와 갈증 (King of Hurts),19,이미지어,이불,"방, 집",L,2,2
+THIRSTY,피와 갈증 (King of Hurts),20,이미지어,팔베개,몸,L,2,2
+THIRSTY,하와이 검은 모래,1,이미지어,섬,물,L,2,2
+THIRSTY,하와이 검은 모래,4,이미지어,무궁화,"꽃, 식물",L,1,2
+THIRSTY,하와이 검은 모래,5,이미지어,태평양,물,L,1,2
+THIRSTY,하와이 검은 모래,6,이미지어,섬,물,L,2,2
+THIRSTY,하와이 검은 모래,8,이미지어,파도,물,L,1,2
+THIRSTY,하와이 검은 모래,9,이미지어,모래,물,L,1,2
+THIRSTY,하와이 검은 모래,9,이미지어,손,몸,L,1,2
+THIRSTY,하와이 검은 모래,10,이미지어,유리,사물,L,1,2
+THIRSTY,하와이 검은 모래,11,이미지어,그늘,"어둠, 그늘",L,1,2
+THIRSTY,하와이 검은 모래,12,이미지어,그림자,"어둠, 그늘",L,1,2
+THIRSTY,하와이 검은 모래,13,이미지어,햇살,"불, 빛",L,1,2
+THIRSTY,하와이 검은 모래,14,이미지어,방,"방, 집",L,1,2
+THIRSTY,하와이 검은 모래,16,이미지어,무궁화,"꽃, 식물",L,1,2
+THIRSTY,하와이 검은 모래,17,이미지어,태평양,물,L,1,2
+TEEN TROUBLES,'99%,1,이미지어,밤,"어둠, 그늘",L,3,2
+TEEN TROUBLES,'99%,1,이미지어,손,몸,L,3,2
+TEEN TROUBLES,'99%,4,이미지어,티비,사물,S,2,2
+TEEN TROUBLES,'99%,8,이미지어,담배,"불, 빛",L,2,2
+TEEN TROUBLES,'99%,11,이미지어,집,"방, 집",W,2,2
+TEEN TROUBLES,Baptized In Fire (불세례),3,직유,날짐승,,L,1,2
+TEEN TROUBLES,Baptized In Fire (불세례),4,직유,미래,,L,1,3
+TEEN TROUBLES,Baptized In Fire (불세례),10,이미지어,숨,몸,S,1,3
+TEEN TROUBLES,Baptized In Fire (불세례),11,직유,영원,,L,1,2
+TEEN TROUBLES,Baptized In Fire (불세례),16,이미지어,해,"불, 빛",S,2,2
+TEEN TROUBLES,Baptized In Fire (불세례),16,이미지어,지도,"길, 탈것, 장소",S,2,2
+TEEN TROUBLES,Baptized In Fire (불세례),16,이미지어,길,"길, 탈것, 장소",S,2,2
+TEEN TROUBLES,Cicadas (매미들),1,이미지어,집,"방, 집",F,2,2
+TEEN TROUBLES,Cicadas (매미들),1,이미지어,개,동물,F,2,2
+TEEN TROUBLES,Cicadas (매미들),1,이미지어,길,"길, 탈것, 장소",F,2,2
+TEEN TROUBLES,Cicadas (매미들),3,이미지어,껍데기,사물,S,2,2
+TEEN TROUBLES,Cicadas (매미들),6,이미지어,가지,"꽃, 식물",S,2,2
+TEEN TROUBLES,Cicadas (매미들),7,이미지어,별,"불, 빛",S,2,1
+TEEN TROUBLES,Cicadas (매미들),7,이미지어,밤,"어둠, 그늘",S,2,1
+TEEN TROUBLES,Cicadas (매미들),7,이미지어,하늘,"계절, 날씨",S,2,1
+TEEN TROUBLES,Cicadas (매미들),12,이미지어,가지,"꽃, 식물",S,2,2
+TEEN TROUBLES,Electra,1,이미지어,심장,몸,F,1,2
+TEEN TROUBLES,Electra,2,이미지어,눈물,물,F,1,2
+TEEN TROUBLES,Electra,3,이미지어,얼굴,몸,F,1,2
+TEEN TROUBLES,Electra,5,이미지어,안개,"계절, 날씨",H,1,2
+TEEN TROUBLES,Electra,5,이미지어,집,"방, 집",H,1,2
+TEEN TROUBLES,Electra,5,이미지어,방,"방, 집",H,1,2
+TEEN TROUBLES,Electra,6,이미지어,침대,"방, 집",F,1,2
+TEEN TROUBLES,Electra,6,이미지어,길,"길, 탈것, 장소",F,1,2
+TEEN TROUBLES,Electra,13,이미지어,피,몸,F,1,2
+TEEN TROUBLES,Flying Bobs,4,이미지어,밤,"어둠, 그늘",S,3,2
+TEEN TROUBLES,Flying Bobs,4,이미지어,여름,"계절, 날씨",S,3,2
+TEEN TROUBLES,Flying Bobs,4,이미지어,매미,동물,S,3,2
+TEEN TROUBLES,Flying Bobs,12,이미지어,night,"어둠, 그늘",F,4,3
+TEEN TROUBLES,Flying Bobs,14,이미지어,white,색,F,4,3
+TEEN TROUBLES,Follow You (따라갈래),1,이미지어,차,"길, 탈것, 장소",F,4,1
+TEEN TROUBLES,Follow You (따라갈래),9,이미지어,집,"방, 집",S,3,1
+TEEN TROUBLES,Follow You (따라갈래),10,이미지어,차,"길, 탈것, 장소",S,3,1
+TEEN TROUBLES,Follow You (따라갈래),10,이미지어,학교,"길, 탈것, 장소",S,3,1
+TEEN TROUBLES,Follow You (따라갈래),11,이미지어,집,"방, 집",S,3,1
+TEEN TROUBLES,Follow You (따라갈래),12,이미지어,개,동물,F,4,1
+TEEN TROUBLES,Follow You (따라갈래),23,직유,들개,동물,S,4,3
+TEEN TROUBLES,Follow You (따라갈래),23,이미지어,들개,동물,S,4,3
+TEEN TROUBLES,Follow You (따라갈래),23,이미지어,심장,몸,S,4,3
+TEEN TROUBLES,Follow You (따라갈래),23,이미지어,길,"길, 탈것, 장소",S,4,3
+TEEN TROUBLES,Friends In Bed,3,직유,바보,,F,3,2
+TEEN TROUBLES,Friends In Bed,4,이미지어,비,물,F,4,2
+TEEN TROUBLES,Friends In Bed,9,이미지어,집,"방, 집",F,3,1
+TEEN TROUBLES,Friends In Bed,9,이미지어,밤,"어둠, 그늘",F,3,1
+TEEN TROUBLES,Friends In Bed,10,이미지어,밤,"어둠, 그늘",F,3,1
+TEEN TROUBLES,Friends In Bed,11,이미지어,이불,"방, 집",F,3,1
+TEEN TROUBLES,Friends In Bed,12,이미지어,이불,"방, 집",F,3,1
+TEEN TROUBLES,Garden State Dreamers,1,이미지어,빛,"불, 빛",L,4,2
+TEEN TROUBLES,Garden State Dreamers,1,이미지어,살구색,색,L,4,2
+TEEN TROUBLES,Garden State Dreamers,1,이미지어,핑크,색,L,4,2
+TEEN TROUBLES,Garden State Dreamers,4,직유,모션,,L,3,2
+TEEN TROUBLES,Garden State Dreamers,5,이미지어,티비,사물,L,2,1
+TEEN TROUBLES,Garden State Dreamers,7,이미지어,차,"길, 탈것, 장소",L,2,2
+TEEN TROUBLES,Garden State Dreamers,8,직유,지금,,L,4,2
+TEEN TROUBLES,Garden State Dreamers,9,이미지어,티비,사물,L,2,1
+TEEN TROUBLES,Garden State Dreamers,15,이미지어,couch,"방, 집",L,2,2
+TEEN TROUBLES,Jeff & Alana,13,이미지어,집,"방, 집",F,2,1
+TEEN TROUBLES,Jeff & Alana,19,이미지어,침대,"방, 집",F,2,2
+TEEN TROUBLES,Jersey Girl,2,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,4,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,10,이미지어,car,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,11,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,14,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,25,이미지어,candy,사물,L,4,2
+TEEN TROUBLES,Jersey Girl,28,이미지어,burn,"불, 빛",L,4,2
+TEEN TROUBLES,Jersey Girl,28,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,31,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,33,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Jersey Girl,42,이미지어,candy,사물,L,4,2
+TEEN TROUBLES,Jersey Girl,45,이미지어,burn,"불, 빛",L,4,2
+TEEN TROUBLES,Jersey Girl,45,이미지어,jersey,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,John Fry,2,이미지어,입술,몸,L,4,2
+TEEN TROUBLES,John Fry,3,이미지어,떡잎,"꽃, 식물",L,4,2
+TEEN TROUBLES,John Fry,4,이미지어,맥주,사물,S,3,2
+TEEN TROUBLES,John Fry,5,이미지어,술,사물,S,3,2
+TEEN TROUBLES,John Fry,5,이미지어,바람,"계절, 날씨",S,3,2
+TEEN TROUBLES,John Fry,6,이미지어,피,몸,S,3,2
+TEEN TROUBLES,John Fry,10,이미지어,눈,"계절, 날씨",L,3,1
+TEEN TROUBLES,John Fry,13,이미지어,집,"방, 집",F,2,2
+TEEN TROUBLES,John Fry,13,이미지어,개,동물,F,2,2
+TEEN TROUBLES,John Fry,14,이미지어,창문,"방, 집",F,2,2
+TEEN TROUBLES,John Fry,16,이미지어,손,몸,L,3,2
+TEEN TROUBLES,Ling Ling,3,이미지어,불,"불, 빛",L,2,2
+TEEN TROUBLES,Ling Ling,28,이미지어,모래,물,L,2,2
+TEEN TROUBLES,Love You The Same,4,이미지어,home,"방, 집",L,3,2
+TEEN TROUBLES,Love You The Same,25,이미지어,heart,몸,L,2,2
+TEEN TROUBLES,Min (미는 남자),2,이미지어,집,"방, 집",F,4,2
+TEEN TROUBLES,Min (미는 남자),3,이미지어,창문,"방, 집",F,4,2
+TEEN TROUBLES,Min (미는 남자),5,이미지어,길,"길, 탈것, 장소",F,4,2
+TEEN TROUBLES,Min (미는 남자),7,이미지어,방,"방, 집",F,3,1
+TEEN TROUBLES,Our Own Summer,2,이미지어,차,"길, 탈것, 장소",L,4,2
+TEEN TROUBLES,Our Own Summer,9,이미지어,학교,"길, 탈것, 장소",L,2,2
+TEEN TROUBLES,Powder Blue,3,직유,먼지,,L,2,2
+TEEN TROUBLES,Powder Blue,5,이미지어,blue,색,L,3,2
+TEEN TROUBLES,Powder Blue,6,이미지어,눈,"계절, 날씨",L,3,2
+TEEN TROUBLES,Powder Blue,7,이미지어,blue,색,L,3,2
+TEEN TROUBLES,Powder Blue,9,이미지어,문,"방, 집",L,3,2
+TEEN TROUBLES,Powder Blue,15,이미지어,blue,색,L,3,2
+TEEN TROUBLES,Powder Blue,16,이미지어,눈,"계절, 날씨",L,3,2
+TEEN TROUBLES,Powder Blue,17,이미지어,blue,색,L,3,2
+TEEN TROUBLES,Powder Blue,19,이미지어,문,"방, 집",L,3,2
+TEEN TROUBLES,Powder Blue,21,이미지어,blue,색,L,2,3
+TEEN TROUBLES,Powder Blue,25,이미지어,blue,색,L,2,3
+TEEN TROUBLES,Powder Blue,28,이미지어,blue,색,L,2,3
+TEEN TROUBLES,Powder Blue,33,이미지어,blue,색,L,2,3
+TEEN TROUBLES,Sunday Girl,6,이미지어,사슴,동물,L,3,2
+TEEN TROUBLES,Sunday Girl,8,이미지어,불,"불, 빛",L,4,2
+TEEN TROUBLES,Sunday Girl,9,이미지어,불,"불, 빛",S,3,2
+TEEN TROUBLES,Sunday Girl,9,이미지어,금,사물,S,3,2
+TEEN TROUBLES,Sunday Girl,14,이미지어,hand,몸,L,4,3
+TEEN TROUBLES,어린양 (My Little Lambs),8,이미지어,입,몸,W,3,2
+TEEN TROUBLES,어린양 (My Little Lambs),9,이미지어,얼굴,몸,W,3,2
+TEEN TROUBLES,어린양 (My Little Lambs),16,이미지어,양,동물,W,3,2
+TEEN TROUBLES,어린양 (My Little Lambs),20,이미지어,양,동물,W,3,2

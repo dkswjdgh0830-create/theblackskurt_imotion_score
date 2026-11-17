@@ -13,21 +13,34 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--wall);font-famil
 #ui{position:fixed;inset:0;opacity:0;transition:opacity .9s}
 #ui.on{opacity:1}
 
-/* 앨범 구성물: 위 줄에 부클릿, 악보 모음집, LP. 아래에 플레이어 */
-.row{position:absolute;left:0;right:0;top:9vh;height:44vh;display:flex;justify-content:center;align-items:flex-end;gap:7vw}
-.item{position:relative;cursor:pointer;transition:transform .4s var(--ease),filter .4s;filter:drop-shadow(0 12px 18px rgba(40,30,20,.13))}
-.item:hover{transform:translateY(-10px);filter:drop-shadow(0 22px 28px rgba(40,30,20,.17))}
-.item.away{visibility:hidden}
-#bk canvas{display:block;height:34vh}
-#cb{width:40vh;height:30vh}
+/* 앨범 구성물: 같은 크기로 한 줄. 가운데 하나만 선택 카드 안에 들어가고 이름이 붙는다. 아래는 플레이어 */
+:root{--V:26vh;--step:38vh}
+#frame{position:absolute;left:50%;top:6vh;width:calc(var(--V) + 8vh);height:calc(var(--V) + 15vh);transform:translateX(-50%);border-radius:2.2vh;
+  background:rgba(255,255,255,.5);border:1px solid rgba(22,20,18,.07);box-shadow:0 2px 10px rgba(40,30,20,.04);pointer-events:none}
+#frame .ic{position:absolute;right:1.6vh;top:1.6vh;width:2.8vh;height:2.8vh;border-radius:50%;border:1px solid rgba(22,20,18,.14);display:flex;align-items:center;justify-content:center}
+#frame .ic svg{width:1.2vh;height:1.2vh}
+.meta .sub{font-size:1.3vh;color:var(--sub);font-weight:500;line-height:1.4}
+.meta .ttl{font-size:1.75vh;font-weight:600;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#frame .meta{position:absolute;left:4vh;right:4vh;bottom:2.8vh}
+.slot{position:absolute;left:50%;top:10vh;width:var(--V);height:var(--V);margin-left:calc(var(--V) / -2);display:flex;align-items:center;justify-content:center;
+  transition:transform .6s var(--ease),opacity .6s;cursor:pointer}
+.slot .vis{position:relative;filter:drop-shadow(0 10px 16px rgba(40,30,20,.14));transition:transform .35s var(--ease)}
+.slot.sel:hover .vis{transform:translateY(-.8vh)}
+.vis.away{visibility:hidden}
+#bk canvas{display:block;height:var(--V)}
+#cb{width:var(--V);height:calc(var(--V) * .8)}
 #cb .peek{position:absolute;left:4%;right:4%;bottom:46%;height:40%}
 #cb .peek canvas{position:absolute;left:0;width:100%;border-radius:2px;box-shadow:0 -1px 0 rgba(0,0,0,.06)}
 #cb .front{position:absolute;left:0;right:0;bottom:0;height:56%;background:#f4f1ea;border-radius:3px;display:flex;align-items:center;justify-content:center;
   box-shadow:inset 0 1px 0 #fff,inset 0 -6px 12px rgba(0,0,0,.04)}
-#cb .front span{font-weight:700;font-size:2.4vh;letter-spacing:.02em}
-#lp{width:36vh;height:34vh}
-#lp canvas{position:absolute;bottom:0;width:30vh;height:30vh;border-radius:50%}
-#player{position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:40vh;pointer-events:none}
+#cb .front span{font-weight:700;font-size:1.8vh;letter-spacing:.02em}
+.lpv{display:block;width:var(--V);height:var(--V);border-radius:50%}
+/* 재생 중: 곡의 악보가 시간을 따라 채워진다 */
+#now{position:absolute;left:50%;top:calc(6vh + var(--V) + 18vh);transform:translateX(-50%);width:84vh;display:flex;align-items:center;gap:3vh;opacity:0;transition:opacity .6s;pointer-events:none}
+#now.on{opacity:1}
+#now .meta{width:17vh;flex:none}
+#now canvas{flex:1;min-width:0;height:6.5vh}
+#player{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:80vh;height:38vh;cursor:pointer}
 
 /* 눈앞 무대 */
 #veil{position:fixed;inset:0;background:rgba(239,237,233,.88);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .5s;z-index:5}
@@ -53,8 +66,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--wall);font-famil
 .card .f canvas{width:100%;height:100%;display:block}
 .card .bk{transform:rotateY(180deg);background:var(--paper);padding:5% 6%;box-sizing:border-box;font-size:1.5vh;line-height:1.85;white-space:pre-wrap;columns:2;column-gap:5%}
 
-/* LP */
-#lpBig{position:fixed;z-index:6;border-radius:50%;transition:transform .9s var(--ease)}
+.card .play{position:absolute;right:2.5%;top:5%;width:5.4vh;height:5.4vh;border-radius:50%;border:0;background:var(--ink);cursor:pointer;display:none;align-items:center;justify-content:center}
+.card.cur .play{display:flex}
+.card .play svg{width:1.8vh;height:1.8vh;margin-left:.3vh}
 
 /* 가사 넣기 (작업용. 가사는 저장하지 않고 이 화면에서만 쓴다) */
 #lyrBtn{position:fixed;right:14px;bottom:12px;z-index:30;font:12px Pretendard;padding:4px 9px;border:1px solid #d6d0c7;background:#faf8f4;color:#8d867d;cursor:pointer;display:none}
@@ -65,19 +79,18 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--wall);font-famil
 
 <div id="intro"></div>
 <div id="ui">
-  <div class="row">
-    <div class="item" id="bk"></div>
-    <div class="item" id="cb"><div class="peek"></div><div class="front"><span>악보 모음집</span></div></div>
-    <div class="item" id="lp"></div>
-  </div>
-  <img id="player" alt="">
+  <div id="frame"><div class="ic"><svg viewBox="0 0 10 10"><path d="M2 8L8 2M3.5 2H8V6.5" fill="none" stroke="#161412" stroke-width="1.2"/></svg></div>
+    <div class="meta"><div class="sub" id="fSub"></div><div class="ttl" id="fTtl"></div></div></div>
+  <div id="row"></div>
+  <div id="now"><div class="meta"><div class="sub" id="nSub"></div><div class="ttl" id="nTtl"></div></div><canvas id="nCv" width="1800" height="180"></canvas></div>
+  <canvas id="player"></canvas>
 </div>
 <div id="veil"></div>
 <div id="deck"></div>
 <button id="lyrBtn">가사</button>
 <div id="lyrPanel"># 곡 제목 한 줄, 그 아래 가사. 이 화면에서만 쓰이고 저장되지 않는다.<textarea id="lyrIn"></textarea><button id="lyrGo">적용</button></div>
 
-<script src="score-data.js"></script>
+<script src="file/score-data.js"></script>
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
@@ -151,9 +164,10 @@ function sheet(c,x0,y0,o,mode){let y=y0;CHORUS.forEach(u=>{u.w.forEach((ws,li)=>
   if(mode!=='boxes')ws.forEach((w,i)=>{c.fillStyle=mode==='text'||(mode==='pick'&&picked(i))?INK:'#dcd7cf';c.fillRect(x0+st[i]*o.cell,y+o.bh*.28,w*o.cell-2,o.bh*.44);});
   if(mode==='paint'||mode==='boxes')(u.b[li]||[]).forEach(([a,b])=>{c.fillStyle=colOf(u.k,u.a,u.e).c;c.fillRect(x0+st[a]*o.cell,y,(st[b]+ws[b]-st[a])*o.cell,o.bh);});
   y+=o.lineGap;});y+=o.unitGap-o.lineGap;});}
-pages.s2=(c)=>{const o={cell:19,bh:22,lineGap:40,unitGap:66},yc=PH*.42;
-  ['text','pick','paint','boxes'].forEach((m,i)=>sheet(c,M+i*290,yc,o,m));
-  const f={cell:16,bw:18,lineGap:24,unitGap:52,pad:0},L=layoutUnits(HAND,f),x0=M+4*290,k=(2*PW-x0-M*.4)/L.w,
+pages.s2=(c)=>{const o={cell:16,bh:20,lineGap:38,unitGap:62},yc=PH*.42,
+  cw=Math.max(...CHORUS.flatMap(u=>u.w.map(ws=>ws.reduce((x,y)=>x+y+SP,0))))*o.cell+60; // 컷 하나 폭 = 가장 긴 줄 + 간격
+  ['text','pick','paint','boxes'].forEach((m,i)=>sheet(c,M+i*cw,yc,o,m));
+  const f={cell:16,bw:18,lineGap:24,unitGap:52,pad:0},L=layoutUnits(HAND,f),x0=M+4*cw,k=(2*PW-x0-M*.4)/L.w,
     o2={cell:f.cell*k,bw:f.bw*k,lineGap:f.lineGap*k,unitGap:f.unitGap*k,pad:x0};
   drawCols(c,layoutUnits(HAND,o2).cols,yc+160,o2);};
 // 펼침 3: 마흔 곡. 세 파트를 같은 축척으로 쌓는다
@@ -200,29 +214,77 @@ const lpCanvas=al=>canvas(900,900,(c,w)=>{c.fillStyle='#ddd3bd';c.beginPath();c.
   cols.forEach(cc=>{c.save();c.rotate(cc.x*step);cc.boxes.forEach(b=>{const ra=r0+(r1-r0)*b.y0/MAXLEN,rb=r0+(r1-r0)*b.y1/MAXLEN;c.fillStyle=b.c;c.fillRect(-bw/2,-rb,bw,rb-ra);});c.restore();});
   c.fillStyle='#efe8d9';c.beginPath();c.arc(0,0,w*.165,0,7);c.fill();c.fillStyle='#bdb6a8';c.beginPath();c.arc(0,0,w*.008,0,7);c.fill();c.restore();});
 
-// ── 인터페이스 채우기 ──
+// ── 인터페이스: 같은 크기 한 줄. 가운데 선택, 양옆으로 넘긴다 ──
 const coverCanvas=page(pages.cover);
-$('bk').appendChild(canvas(PW,PH,c=>c.drawImage(coverCanvas,0,0)));
-[2,1,0].forEach(i=>{const cv=canvas(CARD_W,CARD_H,c=>c.drawImage(fronts[i],0,0));cv.style.top=(i*16)+'%';cv.style.height='100%';$('cb').querySelector('.peek').appendChild(cv);});
 const lpCv=ALB.map(lpCanvas);
-lpCv.forEach((cv,i)=>{const el=canvas(900,900,c=>c.drawImage(cv,0,0));el.style.left=(i*3)+'vh';el.dataset.i=i;$('lp').appendChild(el);});
+const ITEMS=[{k:'book',sub:'부클릿',ttl:'감정악보'},{k:'box',sub:'악보 모음집',ttl:'마흔 곡'},...ALB.map((al,i)=>({k:'lp',i,sub:'LP',ttl:al}))];
+let sel=0;const slots=ITEMS.map((it,n)=>{const s=document.createElement('div');s.className='slot';const v=document.createElement('div');v.className='vis';
+  if(it.k==='book'){v.id='bk';v.appendChild(canvas(PW,PH,c=>c.drawImage(coverCanvas,0,0)));}
+  else if(it.k==='box'){v.id='cb';v.innerHTML='<div class="peek"></div><div class="front"><span>악보 모음집</span></div>';
+    [2,1,0].forEach(i=>{const cv=canvas(CARD_W,CARD_H,c=>c.drawImage(fronts[i],0,0));cv.style.top=(i*16)+'%';cv.style.height='100%';v.querySelector('.peek').appendChild(cv);});}
+  else{const cv=canvas(900,900,c=>c.drawImage(lpCv[it.i],0,0));cv.className='lpv';v.appendChild(cv);}
+  s.appendChild(v);s.onclick=()=>{if(mode!=='home'||busy)return;if(n!==sel){sel=n;placeRow();}else act(it);};$('row').appendChild(s);return s;});
+function placeRow(){slots.forEach((s,n)=>{const d=n-sel;s.classList.toggle('sel',d===0);
+  s.style.transform=`translateX(calc(var(--step) * ${d})) scale(${d?.84:1})`;s.style.opacity=Math.abs(d)>2?0:d?.92:1;s.style.pointerEvents=Math.abs(d)>2?'none':'';});
+  $('fSub').textContent=ITEMS[sel].sub;$('fTtl').textContent=ITEMS[sel].ttl;}
+placeRow();
 
-// 플레이어: 3D로 한 번 그려 이미지로 놓는다
-{const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(1400,900);r.toneMapping=THREE.ACESFilmicToneMapping;
- r.shadowMap.enabled=true;const sc=new THREE.Scene();sc.environment=new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(),.04).texture;sc.environmentIntensity=.8;
- const L=new THREE.DirectionalLight(0xfff6ea,2);L.position.set(-1,2,1.5);L.castShadow=true;L.shadow.mapSize.set(2048,2048);sc.add(L);
- const m=(geo,mat,x=0,y=0,z=0)=>{const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;sc.add(o);return o;};
+// ── 플레이어: 테이블 위 턴테이블. LP를 올리면 판이 돌고 바늘이 안쪽으로 간다 ──
+const P={};
+{const cv=$('player'),r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,2));r.toneMapping=THREE.ACESFilmicToneMapping;
+ r.shadowMap.enabled=true;r.shadowMap.type=THREE.VSMShadowMap;const sc=new THREE.Scene();sc.environment=new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(),.04).texture;sc.environmentIntensity=.8;
+ const L=new THREE.DirectionalLight(0xfff6ea,2);L.position.set(-1,2,1.5);L.castShadow=true;L.shadow.mapSize.set(2048,2048);L.shadow.radius=8;sc.add(L);
+ const m=(geo,mat,x=0,y=0,z=0,g=sc)=>{const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;g.add(o);return o;};
  const tbl=new THREE.MeshStandardMaterial({color:0xf6f5f1,roughness:.55}),satin=new THREE.MeshPhysicalMaterial({color:0xecebe7,roughness:.38,clearcoat:.4}),
    alu=new THREE.MeshStandardMaterial({color:0xd9dadc,metalness:1,roughness:.22}),chrome=new THREE.MeshStandardMaterial({color:0xeeeeee,metalness:1,roughness:.08}),
    rub=new THREE.MeshStandardMaterial({color:0x1d1c1b,roughness:.92});
  m(new THREE.BoxGeometry(.62,.03,.42),tbl,0,-.015,0);[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>m(new THREE.BoxGeometry(.03,.5,.03),tbl,a*.28,-.28,b*.18));
  const T=.089;m(new RoundedBoxGeometry(.45,.075,.36,4,.01),satin,0,.0515,0);
- m(new THREE.CylinderGeometry(.152,.152,.014,96),alu,-.045,T+.007,0);m(new THREE.CylinderGeometry(.148,.148,.003,96),rub,-.045,T+.0155,0);
+ const spin=new THREE.Group();spin.position.set(-.045,T,0);sc.add(spin);
+ m(new THREE.CylinderGeometry(.152,.152,.014,96),alu,0,.007,0,spin);m(new THREE.CylinderGeometry(.148,.148,.003,96),rub,0,.0155,0,spin);
+ m(new THREE.CylinderGeometry(.0035,.0035,.022,16),chrome,-.045,T+.025,0);
+ const lpMat=new THREE.MeshBasicMaterial({toneMapped:false}),lpSide=new THREE.MeshStandardMaterial({color:0xddd3bd,roughness:.4});
+ const disc=m(new THREE.CylinderGeometry(.148,.148,.003,128),[lpSide,lpMat,lpSide],0,.0185,0,spin);disc.visible=false;
+ // 톤암: 받침을 축으로 돈다. 0 = 쉬는 자리
  m(new THREE.CylinderGeometry(.028,.03,.02,32),alu,.17,T+.01,-.12);m(new THREE.CylinderGeometry(.012,.012,.03,24),chrome,.17,T+.035,-.12);
- m(new THREE.CylinderGeometry(.0042,.0042,.24,16),chrome,.17,T+.046,-.02).rotation.x=Math.PI/2;
- m(new THREE.BoxGeometry(.018,.006,.045),rub,.164,T+.042,.115).rotation.y=.35;
- const cam=new THREE.PerspectiveCamera(24,1400/900,.01,10);cam.position.set(0,.5,1.55);cam.lookAt(0,-.12,0);r.render(sc,cam);
- $('player').src=r.domElement.toDataURL();r.dispose();}
+ const arm=new THREE.Group();arm.position.set(.17,T+.046,-.12);sc.add(arm);
+ m(new THREE.CylinderGeometry(.0042,.0042,.24,16),chrome,0,0,.12,arm).rotation.x=Math.PI/2;
+ m(new THREE.CylinderGeometry(.014,.014,.03,24),rub,0,0,-.045,arm).rotation.x=Math.PI/2;
+ m(new THREE.BoxGeometry(.018,.006,.045),rub,-.006,-.004,.235,arm).rotation.y=.35;
+ const cam=new THREE.PerspectiveCamera(24,1,.01,10);cam.position.set(0,.5,1.55);
+ function fit(){r.setSize(cv.clientWidth,cv.clientHeight,false);cam.aspect=cv.clientWidth/cv.clientHeight;cam.updateProjectionMatrix();cam.lookAt(0,-.1,0);}
+ fit();addEventListener('resize',fit);
+ Object.assign(P,{disc,lpMat,spin,arm,speed:0,armTo:0,discY:.0185});
+ let last=performance.now();
+ r.setAnimationLoop(now=>{const dt=(now-last)/1000;last=now;spin.rotation.y-=P.speed*dt;arm.rotation.y+=(P.armTo-arm.rotation.y)*Math.min(1,dt*3);
+   disc.position.y+=(P.discY-disc.position.y)*Math.min(1,dt*5);tickPlay(now);r.render(sc,cam);});}
+
+// ── 재생: LP 한 장을 고르면 그 앨범 전체, 악보 카드를 넣으면 그 곡 하나. 소리는 없다 (음원 저작권) ──
+const ARM_OUT=-.33,ARM_IN=-.56,SEC=.4; // 바늘 각도 (바깥 홈, 안쪽 홈), 줄 하나에 걸리는 초
+const durOf=s=>layoutUnits(s.u,{cell:1,lineGap:1,unitGap:1,pad:0}).cols.length*SEC;
+let playing=null;
+const nc=$('nCv'),nx=nc.getContext('2d');
+function drawNow(s,p){const w=nc.width,h=nc.height;nx.clearRect(0,0,w,h);
+  // 가로 = 시간이라 폭을 다 쓴다. 세로는 곡 높이에 맞춘다
+  const f={cell:16,bw:18,lineGap:24,unitGap:52,pad:0},L=layoutUnits(s.u,f),sh=Math.max(...L.cols.map(c=>c.len))*f.cell,kx=(w-20)/L.w,ky=(h-10)/sh,
+    o={cell:f.cell*ky,bw:Math.min(f.bw*kx,f.bw*ky*1.6),lineGap:f.lineGap*kx,unitGap:f.unitGap*kx,pad:10},cols=layoutUnits(s.u,o).cols,X=10+p*(L.w*kx);
+  // 지나간 곳은 색, 아직 오지 않은 곳은 옅게
+  cols.forEach(c=>{nx.globalAlpha=c.x<=X?1:.16;drawCols(nx,[c],(h+sh*ky)/2,o);});nx.globalAlpha=1;
+  nx.fillStyle=INK;nx.fillRect(Math.min(X,w-2),0,2,h);}
+function startPlay(ai,only=null){const songs=songsOf(ALB[ai]),list=only==null?songs:[only],total=songs.reduce((t,s)=>t+durOf(s),0);
+  const off=only==null?0:songs.slice(0,songs.indexOf(only)).reduce((t,s)=>t+durOf(s),0);
+  playing={ai,list,total,off,t0:performance.now()+1400};
+  P.lpMat.map&&P.lpMat.map.dispose();P.lpMat.map=new THREE.CanvasTexture(lpCv[ai]);P.lpMat.map.colorSpace=THREE.SRGBColorSpace;P.lpMat.needsUpdate=true;
+  P.disc.visible=true;P.disc.position.y=.16;P.discY=.0185;P.speed=Math.PI*2*33.3/60;P.armTo=ARM_OUT+(ARM_IN-ARM_OUT)*off/total;
+  slots.forEach((s,n)=>s.firstChild.classList.toggle('away',ITEMS[n].k==='lp'&&ITEMS[n].i===ai));
+  $('now').classList.add('on');}
+function stopPlay(){if(!playing)return;playing=null;P.armTo=0;P.speed=0;P.discY=.16;$('now').classList.remove('on');
+  setTimeout(()=>{if(!playing){P.disc.visible=false;slots.forEach(s=>s.firstChild.classList.remove('away'));}},700);}
+function tickPlay(now){if(!playing)return;let t=Math.max(0,(now-playing.t0)/1000),cum=playing.off;
+  for(const s of playing.list){const d=durOf(s);if(t<d){P.armTo=ARM_OUT+(ARM_IN-ARM_OUT)*(cum+t)/playing.total;
+      $('nSub').textContent=s.al;$('nTtl').textContent=s.t;drawNow(s,t/d);return;}t-=d;cum+=d;}
+  stopPlay();}
+$('player').onclick=()=>{if(mode==='home'&&playing)stopPlay();};
 
 // ── 눈앞 무대: 카메라는 그대로, 물건이 나온다 ──
 let mode='home',busy=false;
@@ -264,41 +326,39 @@ function cardSize(){const w=Math.min(innerWidth*.5,innerHeight*.9);return {w,h:w
 function placeDeck(){const {w,h}=cardSize();cards.forEach((el,i)=>{const d=i-focus,a=Math.abs(d),sg=Math.sign(d);
   el.style.width=w+'px';el.style.height=h+'px';el.style.marginLeft=-w/2+'px';el.style.marginTop=-h/2+'px';
   el.style.transform=d===0?'translateZ(140px)':`translateX(${sg*(w*.62+(a-1)*w*.13)}px) translateZ(${-a*60}px) rotateY(${-sg*58}deg)`;
-  el.style.opacity=a>9?0:1;el.style.zIndex=100-a;if(d!==0)el.classList.remove('flip');});}
+  el.style.opacity=a>9?0:1;el.style.zIndex=100-a;el.classList.toggle('cur',d===0);if(d!==0)el.classList.remove('flip');});}
 function boxTransform(el,i){const src=$('cb').getBoundingClientRect(),{w}=cardSize(),s=src.width*.9/w;
   return `translate(${src.left+src.width/2-innerWidth/2}px,${src.top+src.height*.3-innerHeight/2}px) scale(${s})`;}
 function lyricsFor(t){const k=t.toLowerCase();return LYR[k]||Object.entries(LYR).find(([n])=>k.startsWith(n)||n.startsWith(k))?.[1]||'';}
 async function openDeck(){veil.classList.add('on');focus=0;
   cards=ALL.map((s,i)=>{const el=document.createElement('div');el.className='card';
-    el.innerHTML='<div class="in"><div class="f"></div><div class="bk"></div></div>';el.querySelector('.f').appendChild(canvas(CARD_W,CARD_H,c=>c.drawImage(fronts[i],0,0)));
+    el.innerHTML='<div class="in"><div class="f"><button class="play"><svg viewBox="0 0 10 10"><path d="M2 1L9 5L2 9Z" fill="#fff"/></svg></button></div><div class="bk"></div></div>';
+    el.querySelector('.f').prepend(canvas(CARD_W,CARD_H,c=>c.drawImage(fronts[i],0,0)));
+    // 재생: 카드를 플레이어에 넣는다
+    el.querySelector('.play').onclick=e=>{e.stopPropagation();if(busy)return;run(async()=>{await closeDeck(i);startPlay(ALB.indexOf(s.al),s);},'home');};
     el.querySelector('.bk').textContent=lyricsFor(s.t);el.style.transition='none';const {w,h}=cardSize();
     Object.assign(el.style,{width:w+'px',height:h+'px',marginLeft:-w/2+'px',marginTop:-h/2+'px',transform:boxTransform(el,i),opacity:0});
     el.onclick=e=>{e.stopPropagation();if(i===focus)el.classList.toggle('flip');else{focus=i;placeDeck();}};deck.appendChild(el);return el;});
   deck.offsetWidth;cards.forEach((el,i)=>{el.style.transition='';el.style.transitionDelay=Math.min(i,12)*35+'ms';});placeDeck();
   await wait(1100);cards.forEach(el=>el.style.transitionDelay='0ms');}
-async function closeDeck(){cards.forEach((el,i)=>{el.classList.remove('flip');el.style.transitionDelay=Math.abs(i-focus)*20+'ms';el.style.transform=boxTransform(el,i);el.style.opacity=0;});
+async function closeDeck(toPlayer=-1){const pr=$('player').getBoundingClientRect(),{w}=cardSize();
+  cards.forEach((el,i)=>{el.classList.remove('flip');el.style.transitionDelay=Math.abs(i-focus)*20+'ms';el.style.opacity=0;
+    el.style.transform=i===toPlayer?`translate(${pr.left+pr.width*.45-innerWidth/2}px,${pr.top+pr.height*.3-innerHeight/2}px) scale(${pr.width*.3/w})`:boxTransform(el,i);});
   veil.classList.remove('on');await wait(1000);deck.innerHTML='';cards=[];}
-let acc=0;addEventListener('wheel',e=>{if(mode==='deck'){acc+=e.deltaY+e.deltaX;while(Math.abs(acc)>=50){focus=Math.max(0,Math.min(cards.length-1,focus+Math.sign(acc)));acc-=Math.sign(acc)*50;placeDeck();}}
+let acc=0,homeAcc=0;addEventListener('wheel',e=>{if(mode==='home'&&!busy&&$('ui').classList.contains('on')){homeAcc+=e.deltaY+e.deltaX;
+    if(Math.abs(homeAcc)>=60){sel=Math.max(0,Math.min(ITEMS.length-1,sel+Math.sign(homeAcc)));homeAcc=0;placeRow();}}
+  else if(mode==='deck'){acc+=e.deltaY+e.deltaX;while(Math.abs(acc)>=50){focus=Math.max(0,Math.min(cards.length-1,focus+Math.sign(acc)));acc-=Math.sign(acc)*50;placeDeck();}}
   else if(mode==='book'&&!busy&&Math.abs(e.deltaY)>30){if(e.deltaY>0&&open<leaves.length)turn(1);else if(e.deltaY<0&&open>1)turn(-1);}},{passive:true});
 
-// LP: 눈앞으로 크게
-const lpBig=document.createElement('canvas');lpBig.id='lpBig';lpBig.width=lpBig.height=900;lpBig.style.display='none';document.body.appendChild(lpBig);
-let lpSrc=null;
-function lpTarget(){const s=Math.min(innerWidth,innerHeight)*.8;return {s,x:(innerWidth-s)/2,y:(innerHeight-s)/2};}
-async function openLP(el){lpSrc=el;const i=+el.dataset.i,t=lpTarget(),r=el.getBoundingClientRect();lpBig.getContext('2d').drawImage(lpCv[i],0,0);
-  Object.assign(lpBig.style,{display:'block',left:t.x+'px',top:t.y+'px',width:t.s+'px',height:t.s+'px',transition:'none',transformOrigin:'0 0',
-    transform:`translate(${r.left-t.x}px,${r.top-t.y}px) scale(${r.width/t.s})`});el.style.visibility='hidden';veil.classList.add('on');
-  lpBig.offsetWidth;lpBig.style.transition='';lpBig.style.transform='none';await wait(900);}
-async function closeLP(){const t=lpTarget(),r=lpSrc.getBoundingClientRect();lpBig.style.transform=`translate(${r.left-t.x}px,${r.top-t.y}px) scale(${r.width/t.s})`;
-  veil.classList.remove('on');await wait(900);lpBig.style.display='none';lpSrc.style.visibility='';lpSrc=null;}
-
 const run=async(fn,next)=>{busy=true;await fn();mode=next;busy=false;};
-$('bk').onclick=()=>{if(mode==='home'&&!busy)run(openBook,'book');};
-$('cb').onclick=()=>{if(mode==='home'&&!busy)run(openDeck,'deck');};
-$('lp').onclick=e=>{const el=e.target.closest('canvas');if(el&&mode==='home'&&!busy)run(()=>openLP(el),'lp');};
-const back=()=>{if(busy)return;if(mode==='book')run(closeBook,'home');else if(mode==='deck')run(closeDeck,'home');else if(mode==='lp')run(closeLP,'home');};
-veil.onclick=back;deck.onclick=back;lpBig.onclick=back;
+// 가운데 물건을 누르면: 부클릿은 눈앞에서 펼쳐지고, 악보 모음집은 카드가 나오고, LP는 플레이어에 올라간다
+function act(it){if(it.k==='book')run(openBook,'book');else if(it.k==='box')run(openDeck,'deck');
+  else if(playing&&playing.ai===it.i&&playing.list.length>1)stopPlay();else startPlay(it.i);}
+const back=()=>{if(busy)return;if(mode==='book')run(closeBook,'home');else if(mode==='deck')run(closeDeck,'home');};
+veil.onclick=back;deck.onclick=back;
 addEventListener('keydown',e=>{if(e.key==='Escape')back();
+  if(mode==='home'&&!busy&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){sel=Math.max(0,Math.min(ITEMS.length-1,sel+(e.key==='ArrowRight'?1:-1)));placeRow();}
+  if(mode==='home'&&!busy&&e.key==='Enter')act(ITEMS[sel]);
   if(mode==='deck'&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){focus=Math.max(0,Math.min(cards.length-1,focus+(e.key==='ArrowRight'?1:-1)));placeDeck();}
   if(mode==='book'&&!busy){if(e.key==='ArrowRight'&&open<leaves.length)turn(1);if(e.key==='ArrowLeft'&&open>1)turn(-1);}});
 addEventListener('resize',()=>{if(mode==='deck')placeDeck();});
