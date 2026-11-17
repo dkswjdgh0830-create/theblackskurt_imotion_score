@@ -1,0 +1,5 @@
+앨범 커버 이미지를 이 폴더에 넣어 주세요.
+cover_team_baby.jpg
+cover_thirsty.jpg
+cover_teen_troubles.jpg
+쓰는 곳은 ../부클릿_설계.md 의 "앨범 커버 이미지" 항목.
